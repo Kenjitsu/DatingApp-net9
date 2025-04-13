@@ -26,7 +26,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200")
+    .WithOrigins("http://127.0.0.1:4200", "https://127.0.0.1:4200")
 );
 app.MapControllers();
 
