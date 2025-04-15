@@ -1,0 +1,35 @@
+        @if (error) {
+        <h4>Internal Server Error</h4>
+        <h5 class="fw-bold text-danger">Error: {{error.message}}</h5>
+        <p class="fw-bold">Note: If you're seeing this error, then Angular is not to blame!</p>
+        <p>What to do next?</p>
+        <ol>
+            <li>
+                Open Chrome DevTools and check the failing network request in the Network tab.
+            </li>
+            <li>
+                Examine the URL of the failing request.
+            </li>
+            <li>
+                Reproduce the error in Postman - if you can reproduce the error then Angular is not to blame!
+            </li>
+        </ol>
+        <p class="fw-medium">Following is the StackTrace - check the first two lines, this tells you exactly which line of code caused
+            the problem!</p>
+        <code class="d-block my-2 text-start" style="background-color: whitesmoke;">
+            {{error.details}}
+        </code>
+        } @else {
+        <div class="container text-dark">
+            <div class="d-flex align-items-center justify-content-center px-2">
+                <div class="text-center">
+                    <h1 class="display-1 fw-bold">500</h1>
+                    <p class="fs-2 fw-medium mt-4">Internal server error</p>
+                    <p class="mt-4 mb-5">Something went wrong, please contact support   .</p>
+                    <a routerLink="/" class="btn btn-info fw-semibold rounded-pill px-4 py-2 custom-btn">
+                        Go Home
+                    </a>
+                </div>
+            </div>
+        </div>
+        }
