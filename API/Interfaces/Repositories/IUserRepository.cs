@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<bool> SaveAllAsync();
     Task<IEnumerable<AppUser>> GetUsersAsync();
     Task<AppUser?> GetByIdAsync(int id);
-    Task<AppUser?> GetUserByUserName(string username);
+    Task<AppUser?> GetUserByUserNameAsync(string username);
 
     Task<IEnumerable<MemberDto>?> GetAllMembersAsync();
     Task<MemberDto?> GetMemberAsync(string username);
