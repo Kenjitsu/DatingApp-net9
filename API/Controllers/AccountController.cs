@@ -60,7 +60,12 @@ public class AccountController : BaseApiController
             if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
         }
 
-        return new UserDto { Username = loginDto.Username, Token = _tokenService.CreateToken(user) };
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = _tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+        };
     }
 
     private async Task<bool> UserExists(string username)
