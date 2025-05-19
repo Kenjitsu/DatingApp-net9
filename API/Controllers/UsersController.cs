@@ -62,7 +62,7 @@ public class UsersController : BaseApiController
     {
         var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
 
-        if (user == null)
+        if(user == null)
             return BadRequest("Cannot update user photo.");
 
         var result = await _photoService.AddPhotoAsync(file);
@@ -76,9 +76,11 @@ public class UsersController : BaseApiController
             PublicId = result.PublicId
         };
 
+        if(user.Photos.Count == 0) photo.IsMain = true;
+
         user.Photos.Add(photo);
 
-        if (await _userRepository.SaveAllAsync())
+        if(await _userRepository.SaveAllAsync())
             return CreatedAtAction(nameof(GetUser), new { username = user.UserName }, photo.MapPhotoUploadToPhotoDto());
 
         return BadRequest("Problem adding photo");
