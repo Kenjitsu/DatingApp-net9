@@ -2,6 +2,8 @@
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using API.Mappers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -22,25 +24,22 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        if(await UserExists(registerDto.Username))
+        if(await UserExists(registerDto.Username!))
         {
             return BadRequest("Username is taken");
         }
 
-        return Ok();
+        using var hmac = new HMACSHA512();
 
-        //using var hmac = new HMACSHA512();
-        //var user = new AppUser
-        //{
-        //    UserName = registerDto.Username.ToLower(),
-        //    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-        //    PasswordSalt = hmac.Key
-        //};
+        var user = registerDto.MapRegisterDtoToAppUser();
 
-        //await _context.AddAsync(user);
-        //await _context.SaveChangesAsync();
+        user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password!));
+        user.PasswordSalt = hmac.Key;
 
-        //return new UserDto { Username = registerDto.Username, Token = _tokenService.CreateToken(user) };
+        await _context.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        return new UserDto { Username = registerDto.Username!, Token = _tokenService.CreateToken(user), KnownAs = user.KnownAs };
     }
 
     [HttpPost("login")]
@@ -66,7 +65,8 @@ public class AccountController : BaseApiController
         {
             Username = user.UserName,
             Token = _tokenService.CreateToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+            KnownAs = user.KnownAs
         };
     }
 
