@@ -23,10 +23,12 @@ public class UserRepository : IUserRepository
 
     public async Task<MemberDto?> GetMemberAsync(string username)
     {
-        return await _dataContext.Users
-            .Where(x => x.UserName == username)
-            .Select(MembersMappers.GetMemberDtoProjection())
-            .SingleOrDefaultAsync();
+        //return await _dataContext.Users
+        //    .Where(x => x.UserName == username)
+        //    .Select(MembersMappers.GetMemberDtoProjection())
+        //    .SingleOrDefaultAsync();
+
+        return null;
     }
 
     public async Task<PagedList<MemberDto>> GetAllMembersAsync(UserParams userParams)
@@ -38,16 +40,21 @@ public class UserRepository : IUserRepository
 
     public async Task<AppUser?> GetUserByUserNameAsync(string username)
     {
-        return await _dataContext.Users
-            .Include(x => x.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == username);
+        //return await _dataContext.Users
+        //    .Include(x => x.Photos)
+        //    .SingleOrDefaultAsync(x => x.UserName == username);
+
+        return null;
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
     {
-        return await _dataContext.Users
-            .Include(x => x.Photos)
-            .ToListAsync();
+        //    return await _dataContext.Users
+        //        .Include(x => x.Photos)
+        //        .ToListAsync();
+        //}
+
+        return [];
     }
 
     public async Task<bool> SaveAllAsync()
