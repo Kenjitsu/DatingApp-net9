@@ -6,11 +6,10 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 
 @Component({
-  selector: 'app-member-detail',
-  standalone: true,
-  imports: [TabsModule, GalleryModule],
-  templateUrl: './member-detail.component.html',
-  styleUrl: './member-detail.component.css'
+    selector: 'app-member-detail',
+    imports: [TabsModule, GalleryModule],
+    templateUrl: './member-detail.component.html',
+    styleUrl: './member-detail.component.css'
 })
 export class MemberDetailComponent implements OnInit {
   private memberService = inject(MembersService);
