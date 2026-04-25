@@ -8,8 +8,8 @@ public class AppUser
     public required string DisplayName { get; set; }
     public required string Email { get; set; }
     //public required string UserName { get; set; }
-    //public byte[] PasswordHash { get; set; } = [];
-    //public byte[] PasswordSalt { get; set; } = [];
+    public byte[] PasswordHash { get; set; } = [];
+    public byte[] PasswordSalt { get; set; } = [];
     //public DateOnly DateOfBirth { get; set; }
     //public required string KnownAs { get; set; }
     //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
