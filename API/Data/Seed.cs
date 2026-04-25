@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.DTOs;
+using API.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,30 +11,63 @@ public class Seed
 {
     public static async Task SeedUsers(DataContext context)
     {
-        //if (await context.Users.AnyAsync()) return;
+        if (await context.Users.AnyAsync()) return;
 
-        //var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
+        var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
 
-        //var options = new JsonSerializerOptions
-        //{
-        //    PropertyNameCaseInsensitive = true,
-        //};
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
 
-        //var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options);
+        var members = JsonSerializer.Deserialize<List<SeedUserDto>>(userData, options);
 
-        //if(users == null) return;
+        if (members == null)
+        {
+            Console.WriteLine("No members in seed data");
+            return;
+        }
 
-        //foreach (var user in users)
-        //{
-        //    using var hmac = new HMACSHA512();
+        foreach (var member in members)
+        {
+            using var hmac = new HMACSHA512();
 
-        //    user.UserName = user.UserName.ToLower();
-        //    user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
-        //    user.PasswordSalt = hmac.Key;
+            var user = new AppUser
+            {
+                Id = member.Id,
+                Email = member.Email,
+                DisplayName = member.DisplayName,
+                ImageUrl = member.ImageUrl,
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd")),
+                PasswordSalt = hmac.Key,
+                Member = new Member
+                {
+                    Id = member.Id,
+                    DisplayName = member.DisplayName,
+                    Description = member.Description,
+                    DateOfBirth = member.DateOfBirth,
+                    ImageUrl = member.ImageUrl,
+                    Gender = member.Gender,
+                    City = member.City,
+                    Country = member.Country,
+                    LastActive = member.LastActive,
+                    Created = member.Created
+                }
+            };
 
-        //    await context.Users.AddAsync(user);
-        //}
+            user.Member.Photos.Add(new Photo
+            {
+                Url = member.ImageUrl!,
+                MemberId = member.Id,
+            });
 
-        //await context.SaveChangesAsync();
+            await context.Users.AddAsync(user);
+
+        }
+
+        await context.SaveChangesAsync();
+
     }
+
 }
+

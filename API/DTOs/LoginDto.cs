@@ -2,11 +2,11 @@
 
 namespace API.DTOs;
 
-public class LoginDto
+public record LoginDto
 {
     [Required]
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 
     [Required]
-    public required string Password { get; set; }
+    public required string Password { get; init; }
 }

@@ -1,8 +1,10 @@
 ﻿namespace API.DTOs;
 
-public class PhotoDto
+public record PhotoDto
 {
-    public int Id { get; set; }
-    public string? Url { get; set; }
-    public bool IsMain { get; set; }
+    public int Id { get; init; }
+    public string? Url { get; init; }
+    public string? PublicId { get; init; }
+    public required string MemberId { get; init; }
+    //public bool IsMain { get; init; }
 }

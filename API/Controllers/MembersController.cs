@@ -13,52 +13,52 @@ namespace API.Controllers;
 [Authorize]
 public class MembersController : BaseApiController
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IMemberRepository _memberRepository;
     private readonly IPhotoService _photoService;
 
-    public MembersController(IUserRepository userRepository, IPhotoService photoService)
+    public MembersController(IMemberRepository memberRepository, IPhotoService photoService)
     {
-        _userRepository = userRepository;
+        _memberRepository = memberRepository;
         _photoService = photoService;
     }
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers(/*[FromQuery] MemberParams userParams*/)
     {
-        var users = await _userRepository.GetAllMembersAsync(userParams);
+        var users = await _memberRepository.GetMembersAsync();
 
-        Response.AddPaginationHeader(users);
+        //Response.AddPaginationHeader(users);
 
         return Ok(users);
     }
 
-    [HttpGet("{username}")]
-    public async Task<ActionResult<MemberDto>> GetUser(string username)
-    {
-        var user = await _userRepository.GetMemberAsync(username);
+    //[HttpGet("{username}")]
+    //public async Task<ActionResult<MemberDto>> GetUser(string id)
+    //{
+    //    var user = await _memberRepository.GetByIdAsync(id);
 
-        if (user == null)
-            return NotFound();
+    //    if (user == null)
+    //        return NotFound();
 
-        return user;
-    }
+    //    return user;
+    //}
 
-    [HttpPut]
-    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
-    {
-        var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
+    //[HttpPut]
+    //public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+    //{
+    //    var user = await _memberRepository.GetUserByUserNameAsync(User.GetUserName());
 
-        if (user == null)
-            return NotFound("Could not find user.");
+    //    if (user == null)
+    //        return NotFound("Could not find user.");
 
-        memberUpdateDto.MapMemberUpdateDtoToAppUser(user);
+    //    memberUpdateDto.MapMemberUpdateDtoToAppUser(user);
 
-        if (await _userRepository.SaveAllAsync()) 
-            return NoContent();
+    //    if (await _memberRepository.SaveAllAsync()) 
+    //        return NoContent();
 
-        return BadRequest("Failed to update the user.");
-    }
+    //    return BadRequest("Failed to update the user.");
+    //}
 
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
@@ -135,14 +135,23 @@ public class MembersController : BaseApiController
     }
 
 
-    //[HttpGet("{id:int}")]
-    //public async Task<ActionResult<AppUser>> GetUser(int id)
-    //{
-    //    var user = await _userRepository.GetByIdAsync(id);
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MemberDto>> GetMember(string id)
+    {
+        var user = await _memberRepository.GetByIdAsync(id);
 
-    //    if (user == null) 
-    //        return NotFound();
+        if (user == null) return NotFound();
 
-    //    return user;
-    //}
+        return user;
+    }
+
+    [HttpGet("{id}/photos")]
+    public async Task<ActionResult<IEnumerable<Photo>>> GetMemberPhotos(string id)
+    {
+        var photos = await _memberRepository.GetPhotosForMemberAsync(id);
+
+        if (photos == null) return NotFound();
+
+        return Ok(photos);
+    }
 }

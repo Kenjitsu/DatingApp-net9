@@ -2,20 +2,20 @@
 
 namespace API.DTOs;
 
-public class MemberDto
+public record MemberDto
 {
-    public int Id { get; set; }
-    public string? Username { get; set; }
-    public int Age { get; set; }
-    public string? PhotoUrl { get; set; }
-    public string? KnownAs { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime LastActive { get; set; }
-    public string? Gender { get; set; }
-    public string? Introduction { get; set; }
-    public string? Interests { get; set; }
-    public string? LookingFor { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
-    public List<PhotoDto>? Photos { get; set; } = [];
+    public required string Id { get; init; }
+    public string? DisplayName { get; init; }
+    public DateOnly DateOfBirth { get; set; }
+    public string? ImageUrl { get; init; }
+    //public string? KnownAs { get; init; }
+    public DateTime Created { get; init; }
+    public DateTime LastActive { get; init; }
+    public string? Gender { get; init; }
+    public string? Description { get; init; }
+    //public string? Interests { get; init; }
+    //public string? LookingFor { get; init; }
+    public string? City { get; init; }
+    public string? Country { get; init; }
+    //public List<PhotoDto>? Photos { get; init; } = [];
 }

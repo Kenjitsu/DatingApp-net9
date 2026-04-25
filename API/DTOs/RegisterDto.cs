@@ -2,14 +2,14 @@
 
 namespace API.DTOs;
 
-public class RegisterDto
+public record RegisterDto
 {
     [Required]
-    public string? DisplayName { get; set; }
+    public string? DisplayName { get; init; }
 
     [Required]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string? Email { get; init; }
 
     //[Required]
     //public string? KnownAs { get; set; }
@@ -28,5 +28,5 @@ public class RegisterDto
 
     [Required]
     [StringLength(8, MinimumLength = 4)]
-    public string? Password { get; set; }
+    public string? Password { get; init; }
 }

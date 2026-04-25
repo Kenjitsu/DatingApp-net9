@@ -1,10 +1,10 @@
 ﻿namespace API.DTOs;
 
-public class MemberUpdateDto
+public record MemberUpdateDto
 {
-    public string? Introduction { get; set; }
-    public string? LookingFor { get; set; }
-    public string? Interests { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
+    public string? Introduction { get; init; }
+    public string? LookingFor { get; init; }
+    public string? Interests { get; init; }
+    public string? City { get; init; }
+    public string? Country { get; init; }
 }

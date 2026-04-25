@@ -1,4 +1,5 @@
-﻿using API.DTOs;
+﻿using System.Linq.Expressions;
+using API.DTOs;
 using API.Entities;
 
 namespace API.Mappers;
@@ -11,9 +12,12 @@ public static class PhotosMappers
         {
             Id = photo.Id,
             Url = photo.Url,
-            IsMain = photo.IsMain,
+            MemberId = photo.MemberId,
+            PublicId = photo.PublicId,
+            //IsMain = photo.IsMain,
         };
 
         return photoDto;
     }
+
 }

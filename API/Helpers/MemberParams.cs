@@ -1,6 +1,6 @@
 ﻿namespace API.Helpers;
 
-public class UserParams
+public class MemberParams
 {
     private const int _maxPageSize = 50;
     public int PageNumber { get; set; } = 1;
