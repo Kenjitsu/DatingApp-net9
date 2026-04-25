@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 export class TestErrorsComponent {
   baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
-  validationErrors: string[] = [];
+  validationErrors = signal<string[]>([]);
 
   get400Error() {
     return this.http.get(this.baseUrl + 'buggy/bad-request').subscribe({
@@ -46,7 +46,7 @@ export class TestErrorsComponent {
       next: (response) => console.log(response),
       error: (error) => {
         console.log(error)
-        this.validationErrors = error;
+        this.validationErrors.set(error);
       },
     })
   }

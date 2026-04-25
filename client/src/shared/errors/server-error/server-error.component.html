@@ -1,0 +1,47 @@
+        @if (error) {
+        <h4>Internal Server Error</h4>
+        <h5 class="font-extrabold text-error">Error: {{error.message}}</h5>
+        <p class="font-bold">Note: If you're seeing this error, then Angular is not to blame!</p>
+        <p>What to do next?</p>
+        <ol>
+            <li>
+                Open Chrome DevTools and check the failing network request in the Network tab.
+            </li>
+            <li>
+                Examine the URL of the failing request.
+            </li>
+            <li>
+                Reproduce the error in Postman - if you can reproduce the error then Angular is not to blame!
+            </li>
+        </ol>
+        <p class="font-medium">Following is the StackTrace - check the first two lines, this tells you exactly which line of code caused
+            the problem!</p>
+        <button class="btn btn-primary" (click)="datailsToggle()">Details</button>
+            @if (showDetails) {
+                <code class="block my-2 text-start bg-base-300">
+                        {{error.details}}
+                </code>
+            }
+
+        
+        } @else {
+        <div class="container text-black">
+            <div class="flex align-middle justify-center px-2">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        class="size-32 text-error">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+                    </svg>
+
+        
+                    <h1 class="text-5xl font-bold">500</h1>
+                    <p class="font-semibold mt-4">Server error</p>
+                    <p class="mt-4 mb-5">If the error persist contact support</p>
+                    <a (click)="goBack()" class="btn btn-info font-semibold rounded-b-md px-4 py-2">
+                        Go back
+                    </a>
+                </div>
+            </div>
+        </div>
+        }

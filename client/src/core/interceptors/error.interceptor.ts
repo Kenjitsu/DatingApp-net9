@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { catchError } from 'rxjs';
-import { ToastService } from '../../core/services/toast-service';
+import { ToastService } from '../services/toast-service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
@@ -22,11 +22,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               }
               throw modalStateErrors.flat();
             } else {
-              toast.error(error.error, error.status);
+              toast.error(error.error + ' ' + error.status);
             }
             break;
           case 401:
-            toast.error('Unauthorized', error.status);
+            toast.error('Unauthorized' + ' ' + error.status);
             break;
           case 404:
             router.navigateByUrl('not-found');

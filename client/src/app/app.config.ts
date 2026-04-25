@@ -4,10 +4,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { errorInterceptor } from './_interceptors/error.interceptor';
-import { jwtInterceptor } from './_interceptors/jwt.interceptor';
+import { errorInterceptor } from '../core/interceptors/error.interceptor';
+import { jwtInterceptor } from '../core/interceptors/jwt.interceptor';
 // import { NgxSpinnerModule } from 'ngx-spinner';
-import { loadingInterceptor } from './_interceptors/loading.interceptor';
+import { loadingInterceptor } from '../core/interceptors/loading.interceptor';
 import { InitService } from '../core/services/init-service';
 import { lastValueFrom } from 'rxjs';
 
