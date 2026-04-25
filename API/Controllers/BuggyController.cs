@@ -25,7 +25,7 @@ public class BuggyController : BaseApiController
     [HttpGet("not-found")]
     public ActionResult<AppUser> GetNotFount()
     {
-        var thing = _dataContext.Users.Find(-1);
+        var thing = _dataContext.Users.Find("text");
 
         if(thing == null) return NotFound();
         return thing;
@@ -34,7 +34,7 @@ public class BuggyController : BaseApiController
     [HttpGet("server-error")]
     public ActionResult<AppUser> GetServerError()
     {
-        var thing = _dataContext.Users.Find(-1) ?? throw new Exception("A bad thing has happened.");
+        var thing = _dataContext.Users.Find("text") ?? throw new Exception("A bad thing has happened.");
 
         return thing;
     }
