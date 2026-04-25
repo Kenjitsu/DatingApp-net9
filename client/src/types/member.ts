@@ -1,4 +1,4 @@
-import { Photo } from "./photo"
+import { Photo } from "../../types/photo"
 
 export interface Member {
     id: number

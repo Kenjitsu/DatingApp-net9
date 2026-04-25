@@ -1,18 +1,19 @@
 import { Component, inject, OnInit, output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import { AccountService } from '../_services/account.service';
-import { TextInputComponent } from "../../app/_forms/text-input/text-input.component";
-import { DatePickerComponent } from "../../app/_forms/date-picker/date-picker.component";
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AccountService } from '../../../core/services/account.service';
+// import { TextInputComponent } from "../../app/_forms/text-input/text-input.component";
+// import { DatePickerComponent } from "../../app/_forms/date-picker/date-picker.component";
 import { Router } from '@angular/router';
+import { RegisterCreds } from '../../../types/user';
 
 @Component({
     selector: 'app-register',
-    imports: [ReactiveFormsModule, TextInputComponent, DatePickerComponent],
+    imports: [ReactiveFormsModule, FormsModule /*TextInputComponent, DatePickerComponent*/],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit {
-
+  protected creds = {} as RegisterCreds;
   private accountService = inject(AccountService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
