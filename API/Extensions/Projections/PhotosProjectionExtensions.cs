@@ -2,7 +2,7 @@
 using API.DTOs;
 using API.Entities;
 
-namespace API.Extensions.Utilities.Projection;
+namespace API.Extensions.Projection;
 
 public static class PhotosProjectionExtensions
 {

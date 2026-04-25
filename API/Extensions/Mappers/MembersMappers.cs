@@ -3,7 +3,7 @@ using API.Entities;
 using API.Extensions.Utilities;
 using System.Linq.Expressions;
 
-namespace API.Mappers;
+namespace API.Extensions.Mappers;
 
 public static class MembersMappers
 {

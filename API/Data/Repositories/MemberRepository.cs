@@ -1,6 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
-using API.Extensions.Utilities.Projection;
+using API.Extensions.Projection;
 using API.Helpers;
 using API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;

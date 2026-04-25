@@ -2,7 +2,7 @@
 using API.Entities;
 using API.Interfaces;
 
-namespace API.Mappers;
+namespace API.Extensions.Mappers;
 
 public static class AppUserMappers
 {

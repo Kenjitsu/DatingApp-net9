@@ -2,8 +2,8 @@
 using System.Text;
 using API.Data;
 using API.DTOs;
+using API.Extensions.Mappers;
 using API.Interfaces;
-using API.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

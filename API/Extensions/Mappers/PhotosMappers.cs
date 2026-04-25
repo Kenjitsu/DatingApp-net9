@@ -2,7 +2,7 @@
 using API.DTOs;
 using API.Entities;
 
-namespace API.Mappers;
+namespace API.Extensions.Mappers;
 
 public static class PhotosMappers
 {
