@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { of, tap } from 'rxjs';
-import { Member } from '../../types/member';
+import { EditableMember, Member } from '../../types/member';
 import { Photo } from '../../types/photo';
 import { AccountService } from './account.service';
 
@@ -14,7 +14,7 @@ export class MembersService {
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
   baseUrl: string = environment.apiUrl;
-  members = signal<Member[]>([]);
+  member = signal<Member | null>(null);
   editMode = signal(false);
 
   
@@ -23,11 +23,24 @@ export class MembersService {
   }
 
   getMember(id: string) {
-    return this.http.get<Member>(this.baseUrl + 'members/' + id);
+    return this.http.get<Member>(this.baseUrl + 'members/' + id).pipe(
+      tap(member => {
+        this.member.set(member)
+      })
+    );
   }
 
   getMemberPhotos(id: string) {
     return this.http.get<Photo[]>(this.baseUrl + 'members/' + id + '/photos')
+  }
+
+  updateMember(member: EditableMember) {
+    return this.http.put(this.baseUrl + 'members', member)
+    //   .pipe(
+    //   tap(() => {
+    //     this.members.update(members => members.map(m => m.username === member.username ? member : m));
+    //   })
+    // );
   }
 
   // getMembers() {
@@ -41,14 +54,6 @@ export class MembersService {
   //   if (member !== undefined) return of(member);
     
   //   return this.http.get<Member>(this.baseUrl + 'users/' + username);
-  // }
-
-  // updateUser(member: Member) {
-  //   return this.http.put(this.baseUrl + 'users', member).pipe(
-  //     tap(() => {
-  //       this.members.update(members => members.map(m => m.username === member.username ? member : m));
-  //     })
-  //   );
   // }
 
   // setMainPhoto(photo: Photo) {

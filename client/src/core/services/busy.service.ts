@@ -1,27 +1,16 @@
-import { inject, Injectable } from '@angular/core';
-// import { NgxSpinnerService } from 'ngx-spinner';
+import { inject, Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusyService {
-  busyRequestCount = 0;
-  // private spinnerService = inject(NgxSpinnerService);
+  busyRequestCount = signal(0);
 
-  // busy() {
-  //   this.busyRequestCount++;
-  //   this.spinnerService.show(undefined, {
-  //     type: 'line-scale-pulse-out',
-  //     bdColor: 'rgba(255,255,255,0)',
-  //     color: '#333333'
-  //   });
-  // }
+  busy() {
+    this.busyRequestCount.update(current => current + 1);
+  }
 
-  // idle() {
-  //   this.busyRequestCount--;
-  //   if (this.busyRequestCount <= 0) {
-  //     this.busyRequestCount = 0;
-  //     this.spinnerService.hide();
-  //   }
-  // }
+  idle() {
+    this.busyRequestCount.update(current => Math.max(0, current - 1));
+  }
 }
