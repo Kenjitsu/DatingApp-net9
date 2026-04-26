@@ -1,8 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Member } from '../../../types/member';
 import { filter } from 'rxjs';
 import { AgePipe } from '../../../core/pipes/age.pipe';
+import { AccountService } from '../../../core/services/account.service';
+import { MembersService } from '../../../core/services/members.service';
 // import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 
 @Component({
@@ -14,9 +16,14 @@ import { AgePipe } from '../../../core/pipes/age.pipe';
   
 export class MemberDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  protected memberService = inject(MembersService);
+  private accountService = inject(AccountService);
   private router = inject(Router);
   protected member = signal<Member | undefined>(undefined);
   protected title = signal<string | undefined>('Profile');
+  protected isCurrentUser = computed(() => {
+    return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id');
+  })
   // images: GalleryItem[] = [];
 
   ngOnInit(): void {

@@ -1,10 +1,11 @@
 import { CanDeactivateFn } from '@angular/router';
-import { MemberEditComponent } from '../../features/members/member-edit/member-edit.component';
+// import { MemberEditComponent } from '../../features/members/member-edit/member-edit.component';
+import { MemberProfile } from '../../features/members/member-profile/member-profile';
 
-export const preventUnsavedChangesGuard: CanDeactivateFn<MemberEditComponent> = (component) => {
-  // if (component.editForm?.dirty) {
-  //   return confirm('Are you sure you want to continue? Any unsaved changes will be lost.')
-  // }
+export const preventUnsavedChangesGuard: CanDeactivateFn<MemberProfile> = (component) => {
+  if (component.editForm?.dirty) {
+    return confirm('Are you sure you want to continue? Any unsaved changes will be lost.')
+  }
 
   return true;
 };

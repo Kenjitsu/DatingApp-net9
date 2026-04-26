@@ -11,3 +11,10 @@ export type Member = {
     country: string
 }
 
+export type EditableMember = {
+    displayName: string;
+    description?: string;
+    city: string;
+    country: string;
+}
+

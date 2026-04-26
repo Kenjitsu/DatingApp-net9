@@ -15,6 +15,7 @@ export class MembersService {
   private accountService = inject(AccountService);
   baseUrl: string = environment.apiUrl;
   members = signal<Member[]>([]);
+  editMode = signal(false);
 
   
   getMembers() {
