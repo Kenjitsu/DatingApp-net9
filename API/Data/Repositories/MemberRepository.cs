@@ -49,17 +49,16 @@ public class MemberRepository : IMemberRepository
         return await query.ToListAsync();
     }
 
-    public async Task<bool> UpdateMemberByIdAsync(string id, MemberUpdateDto memberUpdateDto)
+    public async Task<Member?> GetMembeToUpdaterByIdAsync(string id)
     {
         var member = await _dataContext.Members
             .Include(x => x.User)
+            .Include(x => x.Photos)
             .SingleOrDefaultAsync(m => m.Id == id);
 
-        if (member == null) return false;
+        if (member == null) return null;
 
-        member.MapMemberUpdateDtoToMember(memberUpdateDto);
-
-        return true;
+        return member;
     }
 
     //public async Task<IReadOnlyList<Member>> GetMembersAsync()

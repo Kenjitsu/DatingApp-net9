@@ -39,15 +39,17 @@ public class MembersController : BaseApiController
     {
         var memberId = User.GetMemberId();
 
-        var hasUpdated = await _memberRepository.UpdateMemberByIdAsync(memberId, memberUpdateDto);
+        var member = await _memberRepository.GetMembeToUpdaterByIdAsync(memberId);
 
-        if (!hasUpdated)
-            return NotFound("Could not find user.");
+        if (member == null)
+            return NotFound("Could not find member.");
+
+        member.MapMemberUpdateDtoToMember(memberUpdateDto);
 
         if (await _memberRepository.SaveAllAsync())
             return NoContent();
 
-        return BadRequest("Failed to update the user.");
+        return BadRequest("Failed to update the member.");
     }
 
     [HttpGet("{id}")]
@@ -73,28 +75,33 @@ public class MembersController : BaseApiController
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
     {
-        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
+        var member = await _memberRepository.GetMembeToUpdaterByIdAsync(User.GetMemberId());
 
-        //if(user == null)
-        //    return BadRequest("Cannot update user photo.");
+        if (member == null)
+            return BadRequest("Cannot update member photo.");
 
-        //var result = await _photoService.AddPhotoAsync(file);
+        var result = await _photoService.UploadPhotoAsync(file);
 
-        //if(result.Error != null)
-        //    return BadRequest(result.Error.Message);
+        if (result.Error != null)
+            return BadRequest(result.Error.Message);
 
-        //var photo = new Photo
-        //{
-        //    Url = result.SecureUrl.AbsoluteUri,
-        //    PublicId = result.PublicId
-        //};
+        var photo = new Photo
+        {
+            Url = result.SecureUrl.AbsoluteUri,
+            PublicId = result.PublicId,
+            MemberId = User.GetMemberId(),
+        };
 
-        //if(user.Photos.Count == 0) photo.IsMain = true;
+        if(member.ImageUrl == null)
+        {
+            member.ImageUrl = photo.Url;
+            member.User.ImageUrl = photo.Url;
+        }
 
-        //user.Photos.Add(photo);
+        member.Photos.Add(photo);
 
-        //if(await _userRepository.SaveAllAsync())
-        //    return CreatedAtAction(nameof(GetUser), new { username = user.UserName }, photo.MapPhotoUploadToPhotoDto());
+        if (await _memberRepository.SaveAllAsync())
+            return photo.MapPhotoUploadToPhotoDto();
 
         return BadRequest("Problem adding photo");
     }
@@ -102,15 +109,15 @@ public class MembersController : BaseApiController
     [HttpPut("set-main-photo/{photoId:int}")]
     public async Task<ActionResult> SetMainPhoto(int photoId)
     {
-        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
+        //var member = await _userRepository.GetMembeToUpdaterByIdAsync(User.GetUserName());
 
-        //if(user == null) return BadRequest("Could not find user.");
+        //if(member == null) return BadRequest("Could not find member.");
 
-        //var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        //var photo = member.Photos.FirstOrDefault(x => x.Id == photoId);
 
         //if(photo == null || photo.IsMain) return BadRequest("Cannot use this as main photo.");
 
-        //var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+        //var currentMain = member.Photos.FirstOrDefault(x => x.IsMain);
         //if(currentMain != null) currentMain.IsMain = false;
         //photo.IsMain = true;
 
@@ -122,11 +129,11 @@ public class MembersController : BaseApiController
     [HttpDelete("delete-photo/{photoId:int}")]
     public async Task<ActionResult> DeletePhoto(int photoId)
     {
-        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
+        //var member = await _userRepository.GetMembeToUpdaterByIdAsync(User.GetUserName());
 
-        //if(user == null) return BadRequest("Could not find user.");
+        //if(member == null) return BadRequest("Could not find member.");
 
-        //var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        //var photo = member.Photos.FirstOrDefault(x => x.Id == photoId);
 
         //if(photo == null || photo.IsMain) return BadRequest("This photo cannot be deleted.");
 
@@ -136,7 +143,7 @@ public class MembersController : BaseApiController
         //    if(result.Error != null) return BadRequest(result.Error.Message);
         //}
 
-        //user.Photos.Remove(photo);
+        //member.Photos.Remove(photo);
 
         //if(await _userRepository.SaveAllAsync()) return Ok();
 

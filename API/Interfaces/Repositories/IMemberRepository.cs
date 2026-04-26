@@ -12,7 +12,7 @@ public interface IMemberRepository
     Task<MemberDto?> GetByIdAsync(string id);
 
     Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId);
-    Task<bool> UpdateMemberByIdAsync(string id, MemberUpdateDto memberUpdateDto);
+    Task<Member?> GetMembeToUpdaterByIdAsync(string id);
 
     //Task<PagedList<MemberDto>> GetMembersAsync(MemberParams memberParams);
     Task<IReadOnlyList<MemberDto>> GetMembersAsync();
