@@ -4,14 +4,14 @@ import { delay, finalize } from 'rxjs';
 import { BusyService } from '../services/busy.service';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
-  const busyService = inject(BusyService);
+  // const busyService = inject(BusyService);
 
-  busyService.busy();
+  // busyService.busy();
 
-  return next(req).pipe(
-    delay(1000),
-    finalize(() => {
-      busyService.idle();
-    })
-  );
+  // return next(req).pipe(
+  //   delay(1000),
+  //   finalize(() => {
+  //     busyService.idle();
+  //   })
+  // );
 };

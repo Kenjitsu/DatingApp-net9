@@ -20,7 +20,7 @@ export class ServerErrorComponent {
     this.error = navigation?.extras?.state?.['error'];    
   }
 
-  datailsToggle() {
+  detailsToggle() {
     this.showDetails = !this.showDetails;
   }
 

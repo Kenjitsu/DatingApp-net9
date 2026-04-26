@@ -1,5 +1,6 @@
-export interface Photo {
+export type Photo = {
     id: number
     url: string
-    isMain: boolean
+    publicId?: string
+    memberId: string
 }

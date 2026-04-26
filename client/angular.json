@@ -21,6 +21,14 @@
         "@schematics/angular:interceptor": {
           "skipTests": true,
           "path": "src/core/interceptors"
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true,
+          "path": "src"
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true,
+          "path": "src/core/pipes"
         }
       },
       "root": "",
@@ -45,12 +53,6 @@
               }
             ],
             "styles": [
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/bootswatch/dist/minty/bootstrap.min.css",
-              "node_modules/ngx-spinner/animations/line-scale-pulse-out.css",
-              "node_modules/ngx-toastr/toastr.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -1,19 +1,13 @@
-import { Photo } from "../../types/photo"
-
-export interface Member {
-    id: number
-    username: string
-    age: number
-    photoUrl: string
-    knownAs: string
-    createdAt: Date
-    lastActive: Date
+export type Member = {
+    id: string
+    displayName: string
+    dateOfBirth: string
+    imageUrl?: string
+    created: string
+    lastActive: string
     gender: string
-    introduction: string
-    interests: string
-    lookingFor: string
+    description?: string
     city: string
     country: string
-    photos: Photo[]
 }
 
