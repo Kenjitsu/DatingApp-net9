@@ -6,6 +6,8 @@ using API.Interfaces.Repositories;
 using API.Extensions.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using API.Extensions;
 
 namespace API.Controllers;
 
@@ -32,37 +34,46 @@ public class MembersController : BaseApiController
         return Ok(users);
     }
 
-    //[HttpGet("{username}")]
-    //public async Task<ActionResult<MemberDto>> GetUser(string id)
-    //{
-    //    var user = await _memberRepository.GetByIdAsync(id);
+    [HttpPut]
+    public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
+    {
+        var memberId = User.GetMemberId();
 
-    //    if (user == null)
-    //        return NotFound();
+        var hasUpdated = await _memberRepository.UpdateMemberByIdAsync(memberId, memberUpdateDto);
 
-    //    return user;
-    //}
+        if (!hasUpdated)
+            return NotFound("Could not find user.");
 
-    //[HttpPut]
-    //public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
-    //{
-    //    var user = await _memberRepository.GetUserByUserNameAsync(User.GetUserName());
+        if (await _memberRepository.SaveAllAsync())
+            return NoContent();
 
-    //    if (user == null)
-    //        return NotFound("Could not find user.");
+        return BadRequest("Failed to update the user.");
+    }
 
-    //    memberUpdateDto.MapMemberUpdateDtoToAppUser(user);
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MemberDto>> GetMember(string id)
+    {
+        var user = await _memberRepository.GetByIdAsync(id);
 
-    //    if (await _memberRepository.SaveAllAsync()) 
-    //        return NoContent();
+        if (user == null) return NotFound();
 
-    //    return BadRequest("Failed to update the user.");
-    //}
+        return user;
+    }
+
+    [HttpGet("{id}/photos")]
+    public async Task<ActionResult<IEnumerable<Photo>>> GetMemberPhotos(string id)
+    {
+        var photos = await _memberRepository.GetPhotosForMemberAsync(id);
+
+        if (photos == null) return NotFound();
+
+        return Ok(photos);
+    }
 
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
     {
-        //var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
+        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
 
         //if(user == null)
         //    return BadRequest("Cannot update user photo.");
@@ -91,7 +102,7 @@ public class MembersController : BaseApiController
     [HttpPut("set-main-photo/{photoId:int}")]
     public async Task<ActionResult> SetMainPhoto(int photoId)
     {
-        //var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
+        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
 
         //if(user == null) return BadRequest("Could not find user.");
 
@@ -111,7 +122,7 @@ public class MembersController : BaseApiController
     [HttpDelete("delete-photo/{photoId:int}")]
     public async Task<ActionResult> DeletePhoto(int photoId)
     {
-        //var user = await _userRepository.GetUserByUserNameAsync(User.GetUserName());
+        //var user = await _userRepository.UpdateMemberByIdAsync(User.GetUserName());
 
         //if(user == null) return BadRequest("Could not find user.");
 
@@ -134,23 +145,5 @@ public class MembersController : BaseApiController
     }
 
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<MemberDto>> GetMember(string id)
-    {
-        var user = await _memberRepository.GetByIdAsync(id);
-
-        if (user == null) return NotFound();
-
-        return user;
-    }
-
-    [HttpGet("{id}/photos")]
-    public async Task<ActionResult<IEnumerable<Photo>>> GetMemberPhotos(string id)
-    {
-        var photos = await _memberRepository.GetPhotosForMemberAsync(id);
-
-        if (photos == null) return NotFound();
-
-        return Ok(photos);
-    }
+    
 }

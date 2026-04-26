@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Extensions.Mappers;
 using API.Extensions.Projection;
 using API.Helpers;
 using API.Interfaces.Repositories;
@@ -48,13 +49,17 @@ public class MemberRepository : IMemberRepository
         return await query.ToListAsync();
     }
 
-    public async Task<AppUser?> GetUserByUserNameAsync(string username)
+    public async Task<bool> UpdateMemberByIdAsync(string id, MemberUpdateDto memberUpdateDto)
     {
-        //return await _dataContext.Users
-        //    .Include(x => x.Photos)
-        //    .SingleOrDefaultAsync(x => x.UserName == username);
+        var member = await _dataContext.Members
+            .Include(x => x.User)
+            .SingleOrDefaultAsync(m => m.Id == id);
 
-        return null;
+        if (member == null) return false;
+
+        member.MapMemberUpdateDtoToMember(memberUpdateDto);
+
+        return true;
     }
 
     //public async Task<IReadOnlyList<Member>> GetMembersAsync()

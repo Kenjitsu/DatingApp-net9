@@ -7,12 +7,13 @@ namespace API.Extensions.Mappers;
 
 public static class MembersMappers
 {
-    public static void MapMemberUpdateDtoToAppUser(this MemberUpdateDto memberUpdateDto, AppUser appUser)
+    public static void MapMemberUpdateDtoToMember(this Member member, MemberUpdateDto memberUpdateDto)
     {
-        //appUser.Introduction = memberUpdateDto.Introduction;
-        //appUser.LookingFor = memberUpdateDto.LookingFor;
-        //appUser.Interests = memberUpdateDto.Interests;
-        //appUser.City = memberUpdateDto.City ?? appUser.City;
-        //appUser.Country = memberUpdateDto.Country ?? appUser.Country;
+        member.DisplayName = memberUpdateDto.DisplayName ?? member.DisplayName;
+        member.Description = memberUpdateDto.Description ?? member.Description;
+        member.City = memberUpdateDto.City ?? member.City;
+        member.Country = memberUpdateDto.Country ?? member.Country;
+
+        member.User.DisplayName = memberUpdateDto.DisplayName ?? member.User.DisplayName;
     }
 }
