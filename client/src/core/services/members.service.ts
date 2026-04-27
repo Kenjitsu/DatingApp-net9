@@ -15,7 +15,7 @@ export class MembersService {
   private accountService = inject(AccountService);
   baseUrl: string = environment.apiUrl;
   member = signal<Member | null>(null);
-  editMode = signal(true);
+  editMode = signal(false);
 
   
   getMembers() {
@@ -35,12 +35,7 @@ export class MembersService {
   }
 
   updateMember(member: EditableMember) {
-    return this.http.put(this.baseUrl + 'members', member)
-    //   .pipe(
-    //   tap(() => {
-    //     this.members.update(members => members.map(m => m.username === member.username ? member : m));
-    //   })
-    // );
+    return this.http.put(this.baseUrl + 'members', member);
   }
 
   uploadPhoto(file: File) {
@@ -48,6 +43,10 @@ export class MembersService {
     formData.append('file', file);
 
     return this.http.post<Photo>(this.baseUrl + 'members/add-photo', formData);
+  }
+
+  setMainPhoto(photo: Photo) {
+    return this.http.put(this.baseUrl + 'members/set-main-photo/' + photo.id, {})
   }
 
   // getMembers() {
@@ -63,18 +62,7 @@ export class MembersService {
   //   return this.http.get<Member>(this.baseUrl + 'users/' + username);
   // }
 
-  // setMainPhoto(photo: Photo) {
-  //   return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {}).pipe(
-  //     tap(() => {
-  //       this.members.update(members => members.map(m => {
-  //         if (m.photos.includes(photo)) {
-  //           m.photoUrl = photo.url;
-  //         }
-  //         return m;
-  //       }))
-  //     })
-  //   );
-  // }
+  
 
   // deletePhoto(photo: Photo) {
   //   return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id).pipe(

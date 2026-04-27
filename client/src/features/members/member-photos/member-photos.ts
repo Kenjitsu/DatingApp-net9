@@ -3,15 +3,20 @@ import { MembersService } from '../../../core/services/members.service';
 import { ActivatedRoute } from '@angular/router';
 import { Photo } from '../../../types/photo';
 import { ImageUpload } from "../../../shared/image-upload/image-upload";
+import { AccountService } from '../../../core/services/account.service';
+import { User } from '../../../types/user';
+import { Member } from '../../../types/member';
+import { StarButton } from "../../../shared/star-button/star-button";
 
 @Component({
   selector: 'app-member-photos',
-  imports: [ImageUpload],
+  imports: [ImageUpload, StarButton],
   templateUrl: './member-photos.html',
   styleUrl: './member-photos.css',
 })
 export class MemberPhotos implements OnInit {
   protected memberService = inject(MembersService);
+  private accountService = inject(AccountService);
   private route = inject(ActivatedRoute);
   protected photos = signal<Photo[]>([]);
   protected loading = signal(false);
@@ -37,6 +42,20 @@ export class MemberPhotos implements OnInit {
       error: error => {
         console.log('error uploading image', error);
         this.loading.set(false);
+      }
+    })
+  }
+
+  setMainPhoto(photo: Photo) {
+    this.memberService.setMainPhoto(photo).subscribe({
+      next: () => {
+        const currentUser = this.accountService.currentUser();
+        if (currentUser) currentUser.imageUrl = photo.url;
+        this.accountService.setCurrentUser(currentUser as User);
+        this.memberService.member.update(member => ({
+          ...member,
+          imageUrl: photo.url
+        }) as Member)
       }
     })
   }
