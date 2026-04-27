@@ -49,7 +49,7 @@ public class MemberRepository : IMemberRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Member?> GetMembeToUpdaterByIdAsync(string id)
+    public async Task<Member?> GetMemberToUpdateByIdAsync(string id)
     {
         var member = await _dataContext.Members
             .Include(x => x.User)
