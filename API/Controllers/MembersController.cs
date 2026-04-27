@@ -131,23 +131,23 @@ public class MembersController : BaseApiController
     [HttpDelete("delete-photo/{photoId:int}")]
     public async Task<ActionResult> DeletePhoto(int photoId)
     {
-        //var member = await _userRepository.GetMemberToUpdateByIdAsync(User.GetUserName());
+        var member = await _memberRepository.GetMemberToUpdateByIdAsync(User.GetUserName());
 
-        //if(member == null) return BadRequest("Could not find member.");
+        if (member == null) return BadRequest("Could not find member.");
 
-        //var photo = member.Photos.FirstOrDefault(x => x.Id == photoId);
+        var photo = member.Photos.SingleOrDefault(x => x.Id == photoId);
 
-        //if(photo == null || photo.IsMain) return BadRequest("This photo cannot be deleted.");
+        if (photo == null || photo.Url == member.ImageUrl) return BadRequest("This photo cannot be deleted.");
 
-        //if(photo.PublicId != null)
-        //{
-        //    var result = await _photoService.DeletePhotoAsync(photo.PublicId);
-        //    if(result.Error != null) return BadRequest(result.Error.Message);
-        //}
+        if (photo.PublicId != null)
+        {
+            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
 
-        //member.Photos.Remove(photo);
+        member.Photos.Remove(photo);
 
-        //if(await _userRepository.SaveAllAsync()) return Ok();
+        if (await _memberRepository.SaveAllAsync()) return Ok();
 
         return BadRequest("Problem deleting photo.");
 
