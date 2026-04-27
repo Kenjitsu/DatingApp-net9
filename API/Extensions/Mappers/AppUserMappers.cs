@@ -11,14 +11,17 @@ public static class AppUserMappers
         var appUser = new AppUser
         {
             DisplayName = registerDto.DisplayName!,
-            //KnownAs = registerDto.KnownAs!,
-            //Gender = registerDto.Gender!,
-            //DateOfBirth = DateOnly.Parse(registerDto.DateOfBirth!),
-            //City = registerDto.City!,
-            //Country = registerDto.Country!,
             Email = registerDto.Email!,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
+            Member = new Member
+            {
+                DisplayName = registerDto.DisplayName,
+                Gender = registerDto.Gender,
+                DateOfBirth = DateOnly.Parse(registerDto.DateOfBirth),
+                City = registerDto.City!,
+                Country = registerDto.Country!,
+            }
         };
 
         return appUser;
