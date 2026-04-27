@@ -1,15 +1,13 @@
-import { Component, inject, OnInit, output, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { Component, inject, output, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { AccountService } from '../../../core/services/account.service';
-// import { DatePickerComponent } from "../../app/_forms/date-picker/date-picker.component";
 import { Router } from '@angular/router';
 import { RegisterCreds } from '../../../types/user';
-import { JsonPipe } from '@angular/common';
 import { TextInputComponent } from "../../../shared/text-input/text-input.component";
 
 @Component({
     selector: 'app-register',
-    imports: [ReactiveFormsModule, JsonPipe ,TextInputComponent],
+    imports: [ReactiveFormsModule ,TextInputComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
@@ -22,7 +20,7 @@ export class RegisterComponent {
   protected credentialsForm: FormGroup;
   protected profileForm: FormGroup;
   protected currentStep = signal(1);
-  validationErrors: string[] | undefined;
+  protected validationErrors = signal<string[] | undefined>([]);
 
   constructor() {
     this.credentialsForm = this.fb.group({
@@ -33,7 +31,7 @@ export class RegisterComponent {
     });
 
     this.profileForm = this.fb.group({
-      gender: [ '', Validators.required ],
+      gender: [ 'male', Validators.required ],
       dateOfBirth: [ '', Validators.required ],
       city: [ '', Validators.required ],
       country: [ '', Validators.required ],
@@ -76,13 +74,17 @@ export class RegisterComponent {
     if (this.profileForm.valid && this.credentialsForm.valid) {
       const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
       console.log('Form data: ', formData);
+
+      this.accountService.register(formData).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/members');
+        },
+        error: error => {
+          console.log(error);
+          this.validationErrors.set(error);
+        }
+      })
     }
-    // const dob = this.getDateOnly(this.registerForm.get('dateOfBirth')?.value);
-    // this.registerForm.patchValue({ dateOfBirth: dob });
-    // this.accountService.register(this.registerForm.value).subscribe({
-    //   next: (_) => this.router.navigateByUrl('/members'),
-    //   error: (error) => this.validationErrors = error,
-    // })
   }
 
   cancel() {
