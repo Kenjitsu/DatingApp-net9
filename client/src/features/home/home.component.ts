@@ -10,7 +10,7 @@ import { User } from '../../types/user';
 })
 export class HomeComponent {
   // protected registerMode = false;
-  protected registerMode = signal(true);
+  protected registerMode = signal(false);
 
   // registerToggle() {
   //   this.registerMode = !this.registerMode;

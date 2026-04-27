@@ -90,10 +90,4 @@ export class RegisterComponent {
   cancel() {
     this.cancelRegister.emit(false);
   }
-
-  private getDateOnly(dob: string | undefined) {
-    if (!dob) return;
-
-    return new Date(dob).toISOString().slice(0, 10);
-  }
 }

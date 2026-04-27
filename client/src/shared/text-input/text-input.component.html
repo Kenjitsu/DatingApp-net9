@@ -15,7 +15,7 @@
         }
         @if(control.hasError('minlength') && control.touched) {
             <div class="validation-hint text-error text-xs">
-                {{label()}} must be at most {{control.errors?.['maxlength'].requiredLength}} characters.
+                {{label()}} must be at most {{control.errors?.['minlength'].requiredLength}} characters.
             </div>
         }
         @if(control.hasError('maxlength') && control.touched) {
