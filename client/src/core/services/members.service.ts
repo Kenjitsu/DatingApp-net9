@@ -15,7 +15,7 @@ export class MembersService {
   private accountService = inject(AccountService);
   baseUrl: string = environment.apiUrl;
   member = signal<Member | null>(null);
-  editMode = signal(false);
+  editMode = signal(true);
 
   
   getMembers() {
@@ -41,6 +41,13 @@ export class MembersService {
     //     this.members.update(members => members.map(m => m.username === member.username ? member : m));
     //   })
     // );
+  }
+
+  uploadPhoto(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<Photo>(this.baseUrl + 'members/add-photo', formData);
   }
 
   // getMembers() {
