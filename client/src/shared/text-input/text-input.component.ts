@@ -1,16 +1,17 @@
-import { NgIf } from '@angular/common';
 import { Component, input, Self } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-text-input',
-    imports: [NgIf, ReactiveFormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './text-input.component.html',
     styleUrl: './text-input.component.css'
 })
-export class TextInputComponent implements ControlValueAccessor{
+export class TextInputComponent implements ControlValueAccessor {
   label = input<string>('');
   type = input<string>('text');
+  maxDate = input<string>('');
+
 
   constructor(@Self() public ngControl: NgControl) { 
     this.ngControl.valueAccessor = this;
