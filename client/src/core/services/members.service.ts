@@ -46,7 +46,11 @@ export class MembersService {
   }
 
   setMainPhoto(photo: Photo) {
-    return this.http.put(this.baseUrl + 'members/set-main-photo/' + photo.id, {})
+    return this.http.put(this.baseUrl + 'members/set-main-photo/' + photo.id, {});
+  }
+
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'members/delete-photo/' + photoId);
   }
 
   // getMembers() {
@@ -64,16 +68,5 @@ export class MembersService {
 
   
 
-  // deletePhoto(photo: Photo) {
-  //   return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id).pipe(
-  //     tap(() => {
-  //       this.members.update(members => members.map(m => {
-  //         if (m.photos.includes(photo)) {
-  //           m.photos = m.photos.filter(x => x.id !== photo.id)
-  //         }
-  //         return m;
-  //       }))
-  //     })
-  //   );
-  // }
+  
 }
