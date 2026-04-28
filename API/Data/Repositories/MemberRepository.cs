@@ -24,11 +24,23 @@ public class MemberRepository : IMemberRepository
             .SingleOrDefaultAsync();
     }
 
-    public async Task<PaginatedResult<MemberDto>> GetMembersAsync(PagingParams pagingParams)
+    public async Task<PaginatedResult<MemberDto>> GetMembersAsync(MemberParams memberParams)
     {
         var query = _dataContext.Members.ProjectToMemberDtos();
 
-        return await PaginationHelper.CreateAsync(query, pagingParams.PageNumber, pagingParams.PageSize);
+        query = query.Where(m => m.Id != memberParams.CurrentMemberId);
+
+        if(memberParams.Gender != null)
+        {
+            query = query.Where(m => m.Gender == memberParams.Gender);
+        }
+
+        var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-memberParams.MaxAge - 1));
+        var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-memberParams.MinAge));
+
+        query = query.Where(m => m.DateOfBirth >=  minDob && m.DateOfBirth <= maxDob);
+
+        return await PaginationHelper.CreateAsync(query, memberParams.PageNumber, memberParams.PageSize);
     }
 
     public async Task<Member?> GetMemberToUpdateByIdAsync(string id)
