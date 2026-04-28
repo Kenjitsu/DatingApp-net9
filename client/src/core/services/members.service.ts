@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { of, tap } from 'rxjs';
-import { EditableMember, Member } from '../../types/member';
+import { EditableMember, Member, MemberParams } from '../../types/member';
 import { Photo } from '../../types/photo';
 import { AccountService } from './account.service';
 import { PaginatedResult } from '../../types/pagination';
@@ -19,13 +19,14 @@ export class MembersService {
   editMode = signal(false);
 
   
-  getMembers(pageNumber = 1, pageSize = 5) {
+  getMembers(memberParams: MemberParams) {
     let params = new HttpParams();
 
-    params = params.append('pageNumber', pageNumber);
-    params = params.append('pageSize', pageSize);
-
-    console.log(params);
+    params = params.append('pageNumber', memberParams.pageNumber);
+    params = params.append('pageSize', memberParams.pageSize);
+    params = params.append('minAge', memberParams.minAge);
+    params = params.append('maxAge', memberParams.maxAge);
+    if (memberParams.gender) params = params.append('gender', memberParams.gender);
 
     return this.http.get<PaginatedResult<Member>>(this.baseUrl + 'members', {params: params});
   }
