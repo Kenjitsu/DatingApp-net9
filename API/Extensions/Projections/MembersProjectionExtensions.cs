@@ -17,12 +17,6 @@ public static class MembersProjectionExtensions
         {
             Id = member.Id,
             DateOfBirth = member.DateOfBirth,
-            //ImageUrl = member.Photos == null
-            //    ? null
-            //    : member.Photos
-            //    .Where(p => p.IsMain)
-            //    .Select(p => p.Url)
-            //    .FirstOrDefault(),
             ImageUrl = member.ImageUrl,
             DisplayName = member.DisplayName,
             Created = member.Created,
@@ -31,6 +25,12 @@ public static class MembersProjectionExtensions
             Description = member.Description,
             City = member.City,
             Country = member.Country,
+            //ImageUrl = member.Photos == null
+            //    ? null
+            //    : member.Photos
+            //    .Where(p => p.IsMain)
+            //    .Select(p => p.Url)
+            //    .FirstOrDefault(),
         };
     }
 }

@@ -1,6 +1,5 @@
 ﻿using API.DTOs;
 using API.Entities;
-using API.Extensions.Mappers;
 using API.Extensions.Projection;
 using API.Helpers;
 using API.Interfaces.Repositories;
@@ -25,28 +24,11 @@ public class MemberRepository : IMemberRepository
             .SingleOrDefaultAsync();
     }
 
-    public async Task<MemberDto?> GetMemberAsync(string username)
-    {
-        //return await _dataContext.Users
-        //    .Where(x => x.UserName == username)
-        //    .Select(MembersMappers.GetMemberDtoProjection())
-        //    .SingleOrDefaultAsync();
-
-        return null;
-    }
-
-    //public async Task<PagedList<MemberDto>> GetMembersAsync(MemberParams memberParams)
-    //{
-    //    var query = _dataContext.Members.ProjectToMemberDtos();
-
-    //    return await PagedList<MemberDto>.CreateAsync(query, memberParams.PageNumber, memberParams.PageSize);
-    //}
-
-    public async Task<IReadOnlyList<MemberDto>> GetMembersAsync()
+    public async Task<PaginatedResult<MemberDto>> GetMembersAsync(PagingParams pagingParams)
     {
         var query = _dataContext.Members.ProjectToMemberDtos();
 
-        return await query.ToListAsync();
+        return await PaginationHelper.CreateAsync(query, pagingParams.PageNumber, pagingParams.PageSize);
     }
 
     public async Task<Member?> GetMemberToUpdateByIdAsync(string id)
@@ -60,11 +42,6 @@ public class MemberRepository : IMemberRepository
 
         return member;
     }
-
-    //public async Task<IReadOnlyList<Member>> GetMembersAsync()
-    //{
-    //    return await _dataContext.Members.ToListAsync();
-    //}
 
     public async Task<bool> SaveAllAsync()
     {

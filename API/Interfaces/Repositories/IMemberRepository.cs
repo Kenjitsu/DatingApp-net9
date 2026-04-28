@@ -8,13 +8,10 @@ public interface IMemberRepository
 {
     void Update(Member member);
     Task<bool> SaveAllAsync();
-    //Task<IReadOnlyList<Member>> GetMembersAsync();
     Task<MemberDto?> GetByIdAsync(string id);
 
     Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId);
     Task<Member?> GetMemberToUpdateByIdAsync(string id);
 
-    //Task<PagedList<MemberDto>> GetMembersAsync(MemberParams memberParams);
-    Task<IReadOnlyList<MemberDto>> GetMembersAsync();
-    //Task<MemberDto?> GetMemberAsync(string username);
+    Task<PaginatedResult<MemberDto>> GetMembersAsync(PagingParams pagingParams);
 }

@@ -25,13 +25,13 @@ public class MembersController : BaseApiController
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers(/*[FromQuery] MemberParams userParams*/)
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] PagingParams pagingParams)
     {
-        var users = await _memberRepository.GetMembersAsync();
+        var members = await _memberRepository.GetMembersAsync(pagingParams);
 
-        //Response.AddPaginationHeader(users);
+        //Response.AddPaginationHeader(members);
 
-        return Ok(users);
+        return Ok(members);
     }
 
     [HttpPut]
