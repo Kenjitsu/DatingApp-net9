@@ -12,13 +12,14 @@ public class Member
     public DateTime LastActive { get; set; } = DateTime.UtcNow;
     public required string Gender { get; set; }
     public string? Description { get; set; }
-    //public string? Interests { get; set; }
-    //public string? LookingFor { get; set; }
     public required string City { get; set; }
     public required string Country { get; set; }
 
     // Navigation property
     public List<Photo> Photos { get; set; } = [];
+
+    public List<MemberLike> LikedByMembers { get; set; } = [];
+    public List<MemberLike> LikedMembers { get; set; } = [];
 
     [ForeignKey(nameof(Id))]
     public AppUser User { get; set; } = null!;
