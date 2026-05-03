@@ -25,7 +25,7 @@ public class MembersController : BaseApiController
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] MemberParams memberParams)
+    public async Task<ActionResult<IReadOnlyList<MemberDto>>> GetUsers([FromQuery] MemberParams memberParams)
     {
         memberParams.CurrentMemberId = User.GetMemberId();
         var members = await _memberRepository.GetMembersAsync(memberParams);

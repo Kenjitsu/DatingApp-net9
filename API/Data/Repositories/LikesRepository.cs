@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Entities;
 using API.Extensions.Projection;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,30 +39,33 @@ public class LikesRepository : ILikesRepository
             .FindAsync(sourceMemberId, targetMemberId);
     }
 
-    public async Task<IReadOnlyList<MemberDto>> GetMemberLikes(string predicate, string memberId)
+    public async Task<PaginatedResult<MemberDto>> GetMemberLikes(LikesParams likesParams)
     {
         var query = _dataContext.Likes.AsQueryable();
+        IQueryable<MemberDto> result;
 
-        switch (predicate)
+        switch (likesParams.Predicate)
         {
             case "liked":
-                return await query.Where(x => x.SourceMemberId == memberId)
+                result = query.Where(x => x.SourceMemberId == likesParams.MemberId)
                     .Select(x => x.TargetMember)
-                    .ProjectToMemberDtos()
-                    .ToListAsync();
+                    .ProjectToMemberDtos();
+                break;
             case "likedBy":
-                return await query.Where(x => x.TargetMemberId == memberId)
+                result = query.Where(x => x.TargetMemberId == likesParams.MemberId)
                     .Select(x => x.SourceMember)
-                    .ProjectToMemberDtos()
-                    .ToListAsync();
+                    .ProjectToMemberDtos();
+                break;
             default: //mutual
-                var likedIds = await GetCurrentMemberLikeIds(memberId);
+                var likedIds = await GetCurrentMemberLikeIds(likesParams.MemberId);
 
-                return await query.Where(x => x.TargetMemberId == memberId && likedIds.Contains(x.SourceMemberId))
+                result = query.Where(x => x.TargetMemberId == likesParams.MemberId && likedIds.Contains(x.SourceMemberId))
                     .Select(x => x.SourceMember)
-                    .ProjectToMemberDtos()
-                    .ToListAsync();
+                    .ProjectToMemberDtos();
+                break;
         }
+
+        return await PaginationHelper.CreateAsync(result, likesParams.PageNumber, likesParams.PageSize);
     }
 
     public async Task<bool> SaveAllChanges()
