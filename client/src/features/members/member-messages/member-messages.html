@@ -4,17 +4,21 @@
             <div class="chat" 
                 [class.chat-start]="!message.currentUserSender"
                 [class.chat-end]="message.currentUserSender">
-                <div class="chat-image avatar">
+                <div class="chat-image avatar" 
+                    [class.avatar-online]="presenceService.onlineUsers().includes(message.senderId || message.recipientId)">
                     <div class="w-10 rounded-full">
                         <img alt="image of user"
-                            [src]="message.senderImageUrl" />
+                            [src]="message.senderImageUrl || '/user.png'" />
                     </div>
                 </div>
                 <div class="chat-header">
                     {{message.senderDisplayName}}
                     <time class="text-xs opacity-50">{{message.messageSent | date: 'short'}}</time>
                 </div>
-                <div class="chat-bubble">{{message.content}}</div>
+                <div class="chat-bubble"
+                    [class.chat-bubble-primary]="message.currentUserSender">
+                        {{message.content}}
+                    </div>
                 @if (message.currentUserSender && message.dateRead) {
                     <div class="chat-footer opacity-50">Seen: {{message.dateRead | timeAgo}}</div>
                 } @else if(message.currentUserSender && !message.dateRead) {
