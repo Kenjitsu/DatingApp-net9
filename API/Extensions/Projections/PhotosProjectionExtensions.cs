@@ -6,7 +6,7 @@ namespace API.Extensions.Projection;
 
 public static class PhotosProjectionExtensions
 {
-    public static IQueryable<PhotoDto> ProjectToPhotoDtos(this IQueryable<Photo> photos)
+    public static IQueryable<PhotoDto> ToDtoProjection(this IQueryable<Photo> photos)
     {
         return photos.Select(GetPhotoDtoProjection());
     }

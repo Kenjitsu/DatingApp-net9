@@ -16,17 +16,22 @@ public class MemberRepository : IMemberRepository
         _dataContext = dataContext;
     }
 
+    public async Task<Member?> GetMemberEntityByIdAsync(string id)
+    {
+        return await _dataContext.Members.FindAsync(id);
+    }
+
     public async Task<MemberDto?> GetByIdAsync(string id)
     {
         return await _dataContext.Members
             .Where(m => m.Id == id)
-            .ProjectToMemberDtos()
+            .ToDtoProjection()
             .SingleOrDefaultAsync();
     }
 
     public async Task<PaginatedResult<MemberDto>> GetMembersAsync(MemberParams memberParams)
     {
-        var query = _dataContext.Members.ProjectToMemberDtos();
+        var query = _dataContext.Members.ToDtoProjection();
 
         query = query.Where(m => m.Id != memberParams.CurrentMemberId);
 
@@ -76,7 +81,7 @@ public class MemberRepository : IMemberRepository
         return await _dataContext.Members
             .Where(p => p.Id == memberId)
             .SelectMany(x => x.Photos)
-            .ProjectToPhotoDtos()
+            .ToDtoProjection()
             .ToListAsync();
     }
 }

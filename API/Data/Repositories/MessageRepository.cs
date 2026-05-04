@@ -1,0 +1,72 @@
+﻿using API.DTOs;
+using API.Entities;
+using API.Extensions.Projections;
+using API.Helpers;
+using API.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Data.Repositories;
+
+public class MessageRepository : IMessageRepository
+{
+    private readonly DataContext _context;
+
+    public MessageRepository(DataContext context)
+    {
+        _context = context;
+    }
+
+    public void AddMessage(Message message)
+    {
+        _context.Messages.Add(message);
+    }
+
+    public void DeleteMessage(Message message)
+    {
+        _context.Messages.Remove(message);
+    }
+
+    public async Task<Message?> GetMessage(string messageId)
+    {
+        return await _context.Messages.FindAsync(messageId);
+    }
+
+    public async Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParams messageParams)
+    {
+        var query = _context.Messages
+           .OrderByDescending(m => m.MessageSent)
+           .AsQueryable();
+
+        query = messageParams.Container switch
+        {
+            "Outbox" => query.Where(x => x.SenderId == messageParams.MemberId),
+            _ => query.Where(x => x.RecipientId == messageParams.MemberId)
+        };
+
+        var messageQuery = query.ToDtoProjection();
+        
+        return await PaginationHelper.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
+    }
+
+    public async Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
+    {
+        await _context.Messages
+            .Where(x => x.RecipientId == currentMemberId 
+                    && x.SenderId == recipientId && x.DateRead == null)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.DateRead, DateTime.UtcNow));
+
+        var messages = await _context.Messages
+            .Where(x => (x.RecipientId == currentMemberId && x.SenderId == recipientId)
+                || (x.SenderId == currentMemberId && x.RecipientId == recipientId))
+            .OrderBy(x => x.MessageSent)
+            .ToDtoProjection()
+            .ToListAsync();
+
+        return messages;
+    }
+
+    public async Task<bool> SaveAllAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+}

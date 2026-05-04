@@ -20,6 +20,8 @@ public class Member
 
     public List<MemberLike> LikedByMembers { get; set; } = [];
     public List<MemberLike> LikedMembers { get; set; } = [];
+    public List<Message> MessagesSent { get; set; } = [];
+    public List<Message> MessagesReceived { get; set; } = [];
 
     [ForeignKey(nameof(Id))]
     public AppUser User { get; set; } = null!;

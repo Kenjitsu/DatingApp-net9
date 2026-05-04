@@ -2,7 +2,7 @@
 using API.Entities;
 using API.Extensions.Projection;
 using API.Helpers;
-using API.Interfaces;
+using API.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Repositories;
@@ -49,19 +49,19 @@ public class LikesRepository : ILikesRepository
             case "liked":
                 result = query.Where(x => x.SourceMemberId == likesParams.MemberId)
                     .Select(x => x.TargetMember)
-                    .ProjectToMemberDtos();
+                    .ToDtoProjection();
                 break;
             case "likedBy":
                 result = query.Where(x => x.TargetMemberId == likesParams.MemberId)
                     .Select(x => x.SourceMember)
-                    .ProjectToMemberDtos();
+                    .ToDtoProjection();
                 break;
             default: //mutual
                 var likedIds = await GetCurrentMemberLikeIds(likesParams.MemberId);
 
                 result = query.Where(x => x.TargetMemberId == likesParams.MemberId && likedIds.Contains(x.SourceMemberId))
                     .Select(x => x.SourceMember)
-                    .ProjectToMemberDtos();
+                    .ToDtoProjection();
                 break;
         }
 

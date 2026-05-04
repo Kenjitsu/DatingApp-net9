@@ -6,7 +6,7 @@ namespace API.Extensions.Projection;
 
 public static class MembersProjectionExtensions
 {
-    public static IQueryable<MemberDto> ProjectToMemberDtos(this IQueryable<Member> members)
+    public static IQueryable<MemberDto> ToDtoProjection(this IQueryable<Member> members)
     {
         return members.Select(GetMemberDtoProjection());
     }
