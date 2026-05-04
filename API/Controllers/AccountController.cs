@@ -42,6 +42,8 @@ public class AccountController : BaseApiController
 
         await _userManager.AddToRoleAsync(user, "Member");
 
+        await SetRefreshTokenCookie(user);
+
         return userDto;
     }
 
@@ -58,6 +60,46 @@ public class AccountController : BaseApiController
 
         var userDto = await user.MapAppUserToUserDto(_tokenService);
 
+        await SetRefreshTokenCookie(user);
+
         return userDto;
+    }
+
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<UserDto>> RefreshToken()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken)) return NoContent();
+
+        var user = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken 
+                && u.RefreshTokenExpiry > DateTime.UtcNow);
+
+        if (user == null) return Unauthorized("Invalid refresh token");
+
+        await SetRefreshTokenCookie(user);
+        var userDto = await user.MapAppUserToUserDto(_tokenService);
+
+        return userDto;
+    }
+
+    private async Task SetRefreshTokenCookie(AppUser user)
+    {
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+        await _userManager.UpdateAsync(user);
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = user.RefreshTokenExpiry
+        };
+
+        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
     }
 }
