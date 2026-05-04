@@ -25,6 +25,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<LogUserActivity>();
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+        services.AddSignalR();
 
 
 
