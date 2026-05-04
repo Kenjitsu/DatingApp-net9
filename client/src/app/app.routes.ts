@@ -14,6 +14,8 @@ import { MemberProfile } from '../features/members/member-profile/member-profile
 import { MemberPhotos } from '../features/members/member-photos/member-photos';
 import { MemberMessages } from '../features/members/member-messages/member-messages';
 import { memberResolver } from '../features/members/member.resolver';
+import { Admin } from '../features/admin/admin';
+import { adminGuard } from '../core/guards/admin.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -39,6 +41,7 @@ export const routes: Routes = [
             { path: 'member/edit', component: MemberEditComponent},
             { path: 'lists', component: ListsComponent },
             { path: 'messages', component: MessagesComponent },
+            { path: 'admin', component: Admin, canActivate: [adminGuard] },
         ]
     },
     {path: 'errors', component: TestErrorsComponent},

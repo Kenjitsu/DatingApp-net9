@@ -1,0 +1,59 @@
+<div class="h-[75vh] overflow-auto rounded-box border border-base-content/5 bg-base-100">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Active roles</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of users(); track user.id) {
+                <tr>
+                    <td>{{user.email}}</td>
+                    <td class="flex flex-wrap gap-1">
+                    @for (role of user.roles; track $index) {
+                        
+                            <div class="badge px-1"
+                                [class.badge-neutral]="role === 'Admin'"
+                                [class.badge-accent]="role === 'Moderator'"
+                                [class.badge-info]="role === 'Member'">{{role}}
+                            </div>
+                    }
+                    </td>
+                    
+                    <td><button (click)="openRolesModal(user)" class="btn btn-primary">Edit roles</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<dialog #rolesModal class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="text-lg font-bold">Edit roles for {{selectedUser?.email}}</h3>
+        <fieldset class="fieldset w-full p-4 bg-base-200 border border-base-300 rounded-box">
+            <legend class="fieldset-legend">Select roles</legend>
+            @for (role of availableRoles; track $index) {
+                <label class="fieldset-label my-2">
+                    <input 
+                        (change)="toggleRole($event, role)"
+                        type="checkbox"
+                        [checked]="selectedUser?.roles?.includes(role)"
+                        class="checkbox"
+                        [disabled]="selectedUser?.email === 'admin@test.com' && role === 'Admin'">
+                    {{role}}
+                </label>
+            }
+        </fieldset>
+        <div class="modal-action flex justify-center items-center">
+            <button (click)="updateRoles()" class="btn btn-primary w-full">Submit</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>Close</button>
+    </form>
+</dialog>

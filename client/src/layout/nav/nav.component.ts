@@ -6,10 +6,11 @@ import { TitleCasePipe } from '@angular/common';
 import { ToastService } from '../../core/services/toast-service';
 import { themes } from '../theme';
 import { BusyService } from '../../core/services/busy.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 
 @Component({
     selector: 'app-nav',
-    imports: [FormsModule, RouterLink, RouterLinkActive/*, TitleCasePipe*/],
+    imports: [FormsModule, RouterLink, RouterLinkActive, HasRoleDirective],
     templateUrl: './nav.component.html',
     styleUrl: './nav.component.css'
 })
