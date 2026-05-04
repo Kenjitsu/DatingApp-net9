@@ -9,9 +9,9 @@ namespace API.Data.Repositories;
 
 public class LikesRepository : ILikesRepository
 {
-    private readonly DataContext _dataContext;
+    private readonly UserManager _dataContext;
 
-    public LikesRepository(DataContext dataContext)
+    public LikesRepository(UserManager dataContext)
     {
         _dataContext = dataContext;
     }

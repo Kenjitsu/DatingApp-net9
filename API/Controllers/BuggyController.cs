@@ -7,9 +7,9 @@ namespace API.Controllers;
 
 public class BuggyController : BaseApiController
 {
-    private readonly DataContext _dataContext;
+    private readonly UserManager _dataContext;
 
-    public BuggyController(DataContext dataContext)
+    public BuggyController(UserManager dataContext)
     {
         _dataContext = dataContext;
     }
@@ -43,5 +43,12 @@ public class BuggyController : BaseApiController
     public ActionResult<string> GetBadRequest()
     {
         return BadRequest("This was not a good request.");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin-secret")]
+    public ActionResult<string> GetSecretAdmin()
+    {
+        return Ok("Only admins should see this.");
     }
 }

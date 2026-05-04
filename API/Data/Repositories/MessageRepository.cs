@@ -9,9 +9,9 @@ namespace API.Data.Repositories;
 
 public class MessageRepository : IMessageRepository
 {
-    private readonly DataContext _context;
+    private readonly UserManager _context;
 
-    public MessageRepository(DataContext context)
+    public MessageRepository(UserManager context)
     {
         _context = context;
     }

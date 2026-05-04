@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data.Migrations
 {
-    [DbContext(typeof(DataContext))]
+    [DbContext(typeof(UserManager))]
     [Migration("20260425095003_MembeEntityUpdated")]
     partial class MembeEntityUpdated
     {

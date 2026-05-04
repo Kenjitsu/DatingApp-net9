@@ -6,14 +6,13 @@ namespace API.Extensions.Mappers;
 
 public static class AppUserMappers
 {
-    public static AppUser MapRegisterDtoToAppUser(this RegisterDto registerDto, byte[] passwordHash, byte[] passwordSalt)
+    public static AppUser MapRegisterDtoToAppUser(this RegisterDto registerDto)
     {
         var appUser = new AppUser
         {
             DisplayName = registerDto.DisplayName!,
             Email = registerDto.Email!,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
+            UserName = registerDto.Email!,
             Member = new Member
             {
                 DisplayName = registerDto.DisplayName,
@@ -28,15 +27,15 @@ public static class AppUserMappers
 
     }
 
-    public static UserDto MapAppUserToUserDto(this AppUser user, ITokenService tokenService)
+    public static async Task<UserDto> MapAppUserToUserDto(this AppUser user, ITokenService tokenService)
     {
         var userDto = new UserDto
         {
             Id = user.Id,
             DisplayName = user.DisplayName,
-            Email = user.Email,
+            Email = user.Email!,
             ImageUrl = user.ImageUrl,
-            Token = tokenService.CreateToken(user),
+            Token = await tokenService.CreateToken(user),
         };
 
         return userDto;

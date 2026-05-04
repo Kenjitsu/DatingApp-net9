@@ -9,9 +9,9 @@ namespace API.Data.Repositories;
 
 public class MemberRepository : IMemberRepository
 {
-    private readonly DataContext _dataContext;
+    private readonly UserManager _dataContext;
 
-    public MemberRepository(DataContext dataContext)
+    public MemberRepository(UserManager dataContext)
     {
         _dataContext = dataContext;
     }

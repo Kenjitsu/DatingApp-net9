@@ -13,7 +13,7 @@ public static class ApplicationServiceExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
-        services.AddDbContext<DataContext>(opt =>
+        services.AddDbContext<UserManager>(opt =>
         {
             opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
         });

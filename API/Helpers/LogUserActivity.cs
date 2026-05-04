@@ -15,7 +15,7 @@ public class LogUserActivity : IAsyncActionFilter
 
         var memberId = resultContext.HttpContext.User.GetMemberId();
 
-        var dbContext = resultContext.HttpContext.RequestServices.GetRequiredService<DataContext>();
+        var dbContext = resultContext.HttpContext.RequestServices.GetRequiredService<UserManager>();
 
         await dbContext.Members
             .Where(m => m.Id == memberId)
