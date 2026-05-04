@@ -7,43 +7,43 @@ import { LikesParams } from '../../types/likes';
 import { Paginator } from "../../shared/paginator/paginator";
 
 @Component({
-    selector: 'app-lists',
-    imports: [MemberCardComponent, Paginator],
-    templateUrl: './lists.component.html',
-    styleUrl: './lists.component.css'
+  selector: 'app-lists',
+  imports: [ MemberCardComponent, Paginator ],
+  templateUrl: './lists.component.html',
+  styleUrl: './lists.component.css'
 })
 export class ListsComponent implements OnInit {
-    private likesService = inject(LikesService);
-    protected paginatedLikes = signal<PaginatedResult<Member> | null>(null);
-    protected likesParams = new LikesParams();
-    
-    tabs = [
-        { label: 'Liked', value: 'liked' },
-        { label: 'Liked me', value: 'likedBy' },
-        { label: 'Mutual', value: 'mutual'}
-    ]
+  private likesService = inject(LikesService);
+  protected paginatedLikes = signal<PaginatedResult<Member> | null>(null);
+  protected likesParams = new LikesParams();
 
-    ngOnInit(): void {
-        this.loadLikes();
-    }
+  tabs = [
+    { label: 'Liked', value: 'liked' },
+    { label: 'Liked me', value: 'likedBy' },
+    { label: 'Mutual', value: 'mutual' }
+  ]
 
-    setPredicate(predicate: string) {
-        if (this.likesParams.predicate !== predicate) {
-            this.likesParams.predicate = predicate;
-            this.likesParams.pageNumber = 1;
-            this.loadLikes();
-        }
-    }
+  ngOnInit(): void {
+    this.loadLikes();
+  }
 
-    loadLikes() {
-        this.likesService.getlikes(this.likesParams).subscribe({
-            next: members => this.paginatedLikes.set(members)
-        });
+  setPredicate(predicate: string) {
+    if (this.likesParams.predicate !== predicate) {
+      this.likesParams.predicate = predicate;
+      this.likesParams.pageNumber = 1;
+      this.loadLikes();
     }
+  }
 
-    onPageChange(event: { pageNumber: number, pageSize: number }) {
-        this.likesParams.pageSize = event.pageSize;
-        this.likesParams.pageNumber = event.pageNumber;
-        this.loadLikes();
-    }
+  loadLikes() {
+    this.likesService.getlikes(this.likesParams).subscribe({
+      next: members => this.paginatedLikes.set(members)
+    });
+  }
+
+  onPageChange(event: { pageNumber: number, pageSize: number }) {
+    this.likesParams.pageSize = event.pageSize;
+    this.likesParams.pageNumber = event.pageNumber;
+    this.loadLikes();
+  }
 }
