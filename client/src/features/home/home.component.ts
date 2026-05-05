@@ -1,6 +1,7 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { RegisterComponent } from "../../features/account/register/register.component";
 import { User } from '../../types/user';
+import { AccountService } from '../../core/services/account.service';
 
 @Component({
     selector: 'app-home',
@@ -11,6 +12,7 @@ import { User } from '../../types/user';
 export class HomeComponent {
   // protected registerMode = false;
   protected registerMode = signal(false);
+  protected accountService = inject(AccountService);
 
   // registerToggle() {
   //   this.registerMode = !this.registerMode;
