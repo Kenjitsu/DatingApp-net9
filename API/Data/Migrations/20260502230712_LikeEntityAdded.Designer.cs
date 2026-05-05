@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data.Migrations
 {
-    [DbContext(typeof(UserManager))]
+    [DbContext(typeof(DataContext))]
     [Migration("20260502230712_LikeEntityAdded")]
     partial class LikeEntityAdded
     {

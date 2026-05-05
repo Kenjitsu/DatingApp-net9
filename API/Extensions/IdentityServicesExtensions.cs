@@ -16,7 +16,7 @@ public static class IdentityServicesExtensions
             opt.Password.RequireNonAlphanumeric = false;
             opt.User.RequireUniqueEmail = true;
         }).AddRoles<IdentityRole>()
-          .AddEntityFrameworkStores<UserManager>();
+          .AddEntityFrameworkStores<DataContext>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

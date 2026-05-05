@@ -7,9 +7,9 @@ namespace API.Controllers;
 
 public class BuggyController : BaseApiController
 {
-    private readonly UserManager _dataContext;
+    private readonly DataContext _dataContext;
 
-    public BuggyController(UserManager dataContext)
+    public BuggyController(DataContext dataContext)
     {
         _dataContext = dataContext;
     }
