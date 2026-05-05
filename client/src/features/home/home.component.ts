@@ -10,21 +10,10 @@ import { AccountService } from '../../core/services/account.service';
     styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  // protected registerMode = false;
   protected registerMode = signal(false);
   protected accountService = inject(AccountService);
-
-  // registerToggle() {
-  //   this.registerMode = !this.registerMode;
-  // }
-
-  // cancelRegisterMode(event: boolean) {
-  //   this.registerMode = event;
-  // }
 
   showRegister(value: boolean) {
     this.registerMode.set(value);
   }
-
-
 }
