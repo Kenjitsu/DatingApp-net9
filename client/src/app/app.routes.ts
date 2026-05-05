@@ -8,7 +8,6 @@ import { authGuard } from '../core/guards/auth.guard';
 import { TestErrorsComponent } from '../features/errors/test-errors/test-errors.component';
 import { NotFoundComponent } from '../shared/errors/not-found/not-found.component';
 import { ServerErrorComponent } from '../shared/errors/server-error/server-error.component';
-import { MemberEditComponent } from '../features/members/member-edit/member-edit.component';
 import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes.guard';
 import { MemberProfile } from '../features/members/member-profile/member-profile';
 import { MemberPhotos } from '../features/members/member-photos/member-photos';
@@ -38,7 +37,6 @@ export const routes: Routes = [
                     { path: 'messages', component: MemberMessages, title: 'Messages' },
                 ]
             },
-            { path: 'member/edit', component: MemberEditComponent},
             { path: 'lists', component: ListsComponent },
             { path: 'messages', component: MessagesComponent },
             { path: 'admin', component: Admin, canActivate: [adminGuard] },

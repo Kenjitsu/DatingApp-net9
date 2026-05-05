@@ -1,5 +1,4 @@
 import { CanDeactivateFn } from '@angular/router';
-// import { MemberEditComponent } from '../../features/members/member-edit/member-edit.component';
 import { MemberProfile } from '../../features/members/member-profile/member-profile';
 
 export const preventUnsavedChangesGuard: CanDeactivateFn<MemberProfile> = (component) => {
