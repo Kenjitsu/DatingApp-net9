@@ -15,7 +15,7 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog-service
 })
 export class MessagesComponent implements OnInit {
   private messageService = inject(MessageService);
-  private confimrDialog = inject(ConfirmDialogService);
+  private confirmDialogService = inject(ConfirmDialogService);
   protected container = 'Inbox';
   protected fetchedContainer = 'Inbox';
 	protected pageNumber = 1;
@@ -42,7 +42,7 @@ export class MessagesComponent implements OnInit {
 
   async confirmDelete(event: Event, id: string) { 
     event.stopPropagation();
-    const ok = await this.confimrDialog.confirm('Are you sure you want to delete this message?');
+    const ok = await this.confirmDialogService.confirm('Are you sure you want to delete this message?');
     if (ok) this.deleteMessage(id);
   }
 
