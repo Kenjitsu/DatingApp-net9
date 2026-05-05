@@ -1,5 +1,6 @@
-﻿using API.Data;
+﻿using API.DTOs;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,14 @@ namespace API.Controllers;
 public class AdminController : BaseApiController
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly IUnitOfWork _uow;
+    private readonly IPhotoService _photoService;
 
-    public AdminController(UserManager<AppUser> userManager)
+    public AdminController(UserManager<AppUser> userManager, IUnitOfWork uow, IPhotoService photoService)
     {
         _userManager = userManager;
+        _uow = uow;
+        _photoService = photoService;
     }
 
 
@@ -65,8 +70,65 @@ public class AdminController : BaseApiController
 
     [Authorize(Policy = "ModeratePhotoRole")]
     [HttpGet("photos-to-moderate")]
-    public ActionResult GetPhotosForModeration()
+    public async Task<ActionResult<IReadOnlyList<PhotoForApprovalDto>>> GetPhotosForModeration()
     {
-        return Ok("Admins or moderators can see this.");
+        var photos = await _uow.PhotoRepository.GetUnapprovedPhotos();
+        return Ok(photos);
+    }
+
+    [Authorize(Policy = "ModeratePhotoRole")]
+    [HttpPost("approve-photo/{id:int}")]
+    public async Task<ActionResult> ApprovePhoto(int Id)
+    {
+        var photo = await _uow.PhotoRepository.GetPhotoById(Id);
+
+        if(photo == null) return NotFound("Could not find photo.");
+
+        var member = await _uow.MemberRepository.GetMemberToUpdateByIdAsync(photo.MemberId);
+
+        if(member == null) return NotFound("Could not find member.");
+
+        photo.IsApproved = true;
+
+        if (member.ImageUrl == null)
+        {
+            member.ImageUrl = photo.Url;
+            member.User.ImageUrl = photo.Url;
+        }
+
+        if (_uow.HasChanges())
+        {
+            if (await _uow.Complete()) return NoContent();
+        }
+
+        return BadRequest("Failed to update photo approval status.");
+    }
+
+    [Authorize(Policy = "ModeratePhotoRole")]
+    [HttpPost("reject-photo/{id:int}")]
+    public async Task<ActionResult> RejectPhoto(int Id)
+    {
+        var photo = await _uow.PhotoRepository.GetPhotoById(Id);
+
+        if (photo == null) return NotFound("Could not find photo.");
+
+        if (photo.PublicId != null)
+        {
+            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            _uow.PhotoRepository.RemovePhoto(photo);
+        }
+        else
+        {
+            _uow.PhotoRepository.RemovePhoto(photo);
+        }
+
+        if (_uow.HasChanges())
+        {
+            if (await _uow.Complete()) return NoContent();
+        }
+
+        return BadRequest("Failed to update photo approval status.");
     }
 }

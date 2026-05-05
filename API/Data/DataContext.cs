@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using System.Reflection.Metadata;
+using API.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser>(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
 
         modelBuilder.Entity<IdentityRole>()
             .HasData(

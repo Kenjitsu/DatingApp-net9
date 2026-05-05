@@ -59,6 +59,7 @@ public class MemberRepository : IMemberRepository
         var member = await _dataContext.Members
             .Include(x => x.User)
             .Include(x => x.Photos)
+            .IgnoreQueryFilters()
             .SingleOrDefaultAsync(m => m.Id == id);
 
         if (member == null) return null;
@@ -66,22 +67,20 @@ public class MemberRepository : IMemberRepository
         return member;
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await _dataContext.SaveChangesAsync() > 0;
-    }
-
     public void Update(Member member)
     {
         _dataContext.Entry(member).State = EntityState.Modified;
     }
 
-    public async Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId)
+    public async Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId, bool isCurrentUser)
     {
-        return await _dataContext.Members
+        var query = _dataContext.Members
             .Where(p => p.Id == memberId)
             .SelectMany(x => x.Photos)
-            .ToDtoProjection()
-            .ToListAsync();
+            .ToDtoProjection();
+
+        if (isCurrentUser) query = query.IgnoreQueryFilters();
+
+        return await query.ToListAsync();
     }
 }

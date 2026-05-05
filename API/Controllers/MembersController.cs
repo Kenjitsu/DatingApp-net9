@@ -1,25 +1,24 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Extensions.Mappers;
 using API.Helpers;
 using API.Interfaces;
-using API.Interfaces.Repositories;
-using API.Extensions.Mappers;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using API.Extensions;
 
 namespace API.Controllers;
 
 [Authorize]
 public class MembersController : BaseApiController
 {
-    private readonly IMemberRepository _memberRepository;
+    private readonly IUnitOfWork _uow;
     private readonly IPhotoService _photoService;
 
-    public MembersController(IMemberRepository memberRepository, IPhotoService photoService)
+    public MembersController(IUnitOfWork uow, IPhotoService photoService)
     {
-        _memberRepository = memberRepository;
+        _uow = uow;
         _photoService = photoService;
     }
 
@@ -28,7 +27,7 @@ public class MembersController : BaseApiController
     public async Task<ActionResult<IReadOnlyList<MemberDto>>> GetUsers([FromQuery] MemberParams memberParams)
     {
         memberParams.CurrentMemberId = User.GetMemberId();
-        var members = await _memberRepository.GetMembersAsync(memberParams);
+        var members = await _uow.MemberRepository.GetMembersAsync(memberParams);
        
         return Ok(members);
     }
@@ -38,14 +37,14 @@ public class MembersController : BaseApiController
     {
         var memberId = User.GetMemberId();
 
-        var member = await _memberRepository.GetMemberToUpdateByIdAsync(memberId);
+        var member = await _uow.MemberRepository.GetMemberToUpdateByIdAsync(memberId);
 
         if (member == null)
             return NotFound("Could not find member.");
 
         member.MapMemberUpdateDtoToMember(memberUpdateDto);
 
-        if (await _memberRepository.SaveAllAsync())
+        if (await _uow.Complete())
             return NoContent();
 
         return BadRequest("Failed to update the member.");
@@ -54,7 +53,7 @@ public class MembersController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<MemberDto>> GetMember(string id)
     {
-        var user = await _memberRepository.GetByIdAsync(id);
+        var user = await _uow.MemberRepository.GetByIdAsync(id);
 
         if (user == null) return NotFound();
 
@@ -64,9 +63,8 @@ public class MembersController : BaseApiController
     [HttpGet("{id}/photos")]
     public async Task<ActionResult<IEnumerable<Photo>>> GetMemberPhotos(string id)
     {
-        var photos = await _memberRepository.GetPhotosForMemberAsync(id);
-
-        if (photos == null) return NotFound();
+        var isCurrentUser = User.GetMemberId() == id;
+        var photos = await _uow.MemberRepository.GetPhotosForMemberAsync(id, isCurrentUser);
 
         return Ok(photos);
     }
@@ -74,7 +72,7 @@ public class MembersController : BaseApiController
     [HttpPost("add-photo")]
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
     {
-        var member = await _memberRepository.GetMemberToUpdateByIdAsync(User.GetMemberId());
+        var member = await _uow.MemberRepository.GetMemberToUpdateByIdAsync(User.GetMemberId());
 
         if (member == null)
             return BadRequest("Cannot update member photo.");
@@ -89,17 +87,18 @@ public class MembersController : BaseApiController
             Url = result.SecureUrl.AbsoluteUri,
             PublicId = result.PublicId,
             MemberId = User.GetMemberId(),
+            IsApproved = false
         };
 
-        if(member.ImageUrl == null)
-        {
-            member.ImageUrl = photo.Url;
-            member.User.ImageUrl = photo.Url;
-        }
+        //if(member.ImageUrl == null)
+        //{
+        //    member.ImageUrl = photo.Url;
+        //    member.User.ImageUrl = photo.Url;
+        //}
 
         member.Photos.Add(photo);
 
-        if (await _memberRepository.SaveAllAsync())
+        if (await _uow.Complete())
             return photo.MapPhotoUploadToPhotoDto();
 
         return BadRequest("Problem adding photo");
@@ -108,7 +107,7 @@ public class MembersController : BaseApiController
     [HttpPut("set-main-photo/{photoId:int}")]
     public async Task<ActionResult> SetMainPhoto(int photoId)
     {
-        var member = await _memberRepository.GetMemberToUpdateByIdAsync(User.GetMemberId());
+        var member = await _uow.MemberRepository.GetMemberToUpdateByIdAsync(User.GetMemberId());
 
         if (member == null) return BadRequest("Could not find member.");
 
@@ -122,7 +121,7 @@ public class MembersController : BaseApiController
         member.ImageUrl = photo.Url;
         member.User.ImageUrl = photo.Url;
 
-        if (await _memberRepository.SaveAllAsync()) return NoContent();
+        if (await _uow.Complete()) return NoContent();
 
         return BadRequest("Problem setting main image");
     }
@@ -130,13 +129,16 @@ public class MembersController : BaseApiController
     [HttpDelete("delete-photo/{photoId:int}")]
     public async Task<ActionResult> DeletePhoto(int photoId)
     {
-        var member = await _memberRepository.GetMemberToUpdateByIdAsync(User.GetUserName());
+        var member = await _uow.MemberRepository.GetMemberToUpdateByIdAsync(User.GetMemberId());
 
-        if (member == null) return BadRequest("Could not find member.");
+        if (member == null) return BadRequest("Cannot get member from token");
 
         var photo = member.Photos.SingleOrDefault(x => x.Id == photoId);
 
-        if (photo == null || photo.Url == member.ImageUrl) return BadRequest("This photo cannot be deleted.");
+        if (photo == null || photo.Url == member.ImageUrl)
+        {
+            return BadRequest("This photo cannot be deleted");
+        }
 
         if (photo.PublicId != null)
         {
@@ -146,10 +148,9 @@ public class MembersController : BaseApiController
 
         member.Photos.Remove(photo);
 
-        if (await _memberRepository.SaveAllAsync()) return Ok();
+        if (await _uow.Complete()) return Ok();
 
-        return BadRequest("Problem deleting photo.");
-
+        return BadRequest("Problem deleting the photo");
     }
 
 

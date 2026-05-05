@@ -19,7 +19,23 @@ public static class PhotosProjectionExtensions
             Url = photo.Url,
             MemberId = photo.MemberId,
             PublicId = photo.PublicId,
-            //IsMain = photo.IsMain,
+            IsApproved = photo.IsApproved,
+        };
+    }
+
+    public static IQueryable<PhotoForApprovalDto> ToApprovalDtoProjection(this IQueryable<Photo> photos)
+    {
+        return photos.Select(GetPhotoForApprovalDtoProjection());
+    }
+
+    private static Expression<Func<Photo, PhotoForApprovalDto>> GetPhotoForApprovalDtoProjection()
+    {
+        return photo => new PhotoForApprovalDto
+        {
+            Id = photo.Id,
+            ImageUrl = photo.Url,
+            UserId = photo.MemberId,
+            IsApproved = photo.IsApproved,
         };
     }
 

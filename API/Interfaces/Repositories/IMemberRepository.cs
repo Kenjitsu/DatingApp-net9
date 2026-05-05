@@ -7,11 +7,10 @@ namespace API.Interfaces.Repositories;
 public interface IMemberRepository
 {
     void Update(Member member);
-    Task<bool> SaveAllAsync();
     Task<Member?> GetMemberEntityByIdAsync(string id);
     Task<MemberDto?> GetByIdAsync(string id);
 
-    Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId);
+    Task<IReadOnlyList<PhotoDto>> GetPhotosForMemberAsync(string memberId, bool isCurrentUser);
     Task<Member?> GetMemberToUpdateByIdAsync(string id);
 
     Task<PaginatedResult<MemberDto>> GetMembersAsync(MemberParams memberParams);

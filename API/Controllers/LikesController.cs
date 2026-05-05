@@ -1,20 +1,19 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using API.Helpers;
-using API.Interfaces.Repositories;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 public class LikesController : BaseApiController
 {
-    private readonly ILikesRepository _likesRepository;
+    private readonly IUnitOfWork _uow;
 
-    public LikesController(ILikesRepository likesRepository)
+    public LikesController(IUnitOfWork uow)
     {
-        _likesRepository = likesRepository;
+        _uow = uow;
     }
 
     [HttpPost("{targetMemberId}")]
@@ -24,7 +23,7 @@ public class LikesController : BaseApiController
 
         if (sourceMemberId == targetMemberId) return BadRequest("You cannot like yourself");
 
-        var existingLike = await _likesRepository.GetMemberLike(sourceMemberId, targetMemberId);
+        var existingLike = await _uow.LikesRepository.GetMemberLike(sourceMemberId, targetMemberId);
 
         if(existingLike == null)
         {
@@ -34,14 +33,14 @@ public class LikesController : BaseApiController
                 TargetMemberId = targetMemberId
             };
 
-            _likesRepository.AddLike(like);
+            _uow.LikesRepository.AddLike(like);
         }
         else
         {
-            _likesRepository.DeleteLike(existingLike);
+            _uow.LikesRepository.DeleteLike(existingLike);
         }
 
-        if(await _likesRepository.SaveAllChanges()) return Ok();
+        if(await _uow.Complete()) return Ok();
 
         return BadRequest("Failed to update like");
     }
@@ -50,7 +49,7 @@ public class LikesController : BaseApiController
     public async Task<ActionResult<IReadOnlyList<MemberLike>>> GetCurrentMemberLikeIds()
     {
         var sourceMemberId = User.GetMemberId();
-        var likes = await _likesRepository.GetCurrentMemberLikeIds(sourceMemberId);
+        var likes = await _uow.LikesRepository.GetCurrentMemberLikeIds(sourceMemberId);
 
         return Ok(likes);
     }
@@ -59,7 +58,7 @@ public class LikesController : BaseApiController
     public async Task<ActionResult<IReadOnlyList<MemberDto>>> GetMemberLikes([FromQuery] LikesParams likesParams)
     {
         likesParams.MemberId = User.GetMemberId();
-        var members = await _likesRepository.GetMemberLikes(likesParams);
+        var members = await _uow.LikesRepository.GetMemberLikes(likesParams);
 
         return Ok(members);
     }
