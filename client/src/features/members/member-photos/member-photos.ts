@@ -8,6 +8,7 @@ import { User } from '../../../types/user';
 import { Member } from '../../../types/member';
 import { StarButton } from "../../../shared/star-button/star-button";
 import { DeleteButton } from "../../../shared/delete-button/delete-button";
+import { ConfirmDialogService } from '../../../core/services/confirm-dialog-service';
 
 @Component({
   selector: 'app-member-photos',
@@ -18,6 +19,7 @@ import { DeleteButton } from "../../../shared/delete-button/delete-button";
 export class MemberPhotos implements OnInit {
   protected memberService = inject(MembersService);
   protected accountService = inject(AccountService);
+  private confirmDialogService = inject(ConfirmDialogService)
   private route = inject(ActivatedRoute);
   protected photos = signal<Photo[]>([]);
   protected loading = signal(false);
@@ -57,6 +59,12 @@ export class MemberPhotos implements OnInit {
         this.setMainLocalPhoto(photo);
       }
     })
+  }
+
+  async confirmDelete(event: Event, photoId: number) { 
+    event.stopPropagation();
+    const ok = await this.confirmDialogService.confirm('Are you sure you want to delete this photo?');
+    if (ok) this.deletePhoto(photoId);
   }
 
   deletePhoto(photoId: number) {
