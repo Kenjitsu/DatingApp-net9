@@ -6,6 +6,7 @@ import { AgePipe } from '../../../core/pipes/age.pipe';
 import { AccountService } from '../../../core/services/account.service';
 import { MembersService } from '../../../core/services/members.service';
 import { PresenceService } from '../../../core/services/presence-service';
+import { LikesService } from '../../../core/services/likes-service';
 // import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 
 @Component({
@@ -20,12 +21,22 @@ export class MemberDetailComponent implements OnInit {
   protected memberService = inject(MembersService);
   private accountService = inject(AccountService);
   protected presenceService = inject(PresenceService);
+  protected likesService = inject(LikesService);
   private router = inject(Router);
   protected title = signal<string | undefined>('Profile');
+  private routeId = signal<string | null>(null);
   protected isCurrentUser = computed(() => {
-    return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id');
+    return this.accountService.currentUser()?.id === this.routeId();
   })
-  // images: GalleryItem[] = [];
+  protected hasLiked = computed(() => this.likesService.likeIds().includes(this.routeId()!));
+
+
+  constructor() {
+    this.route.paramMap.subscribe(params => { 
+      this.routeId.set(params.get('id'));
+    })
+    
+  }
 
   ngOnInit(): void {
     this.title.set(this.route.firstChild?.snapshot.title)
