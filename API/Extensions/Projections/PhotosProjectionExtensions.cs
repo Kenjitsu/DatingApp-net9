@@ -33,7 +33,7 @@ public static class PhotosProjectionExtensions
         return photo => new PhotoForApprovalDto
         {
             Id = photo.Id,
-            ImageUrl = photo.Url,
+            Url = photo.Url,
             UserId = photo.MemberId,
             IsApproved = photo.IsApproved,
         };

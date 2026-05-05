@@ -90,10 +90,10 @@ public class MembersController : BaseApiController
             IsApproved = false
         };
 
-        //if(member.ImageUrl == null)
+        //if(member.Url == null)
         //{
-        //    member.ImageUrl = photo.Url;
-        //    member.User.ImageUrl = photo.Url;
+        //    member.Url = photo.Url;
+        //    member.User.Url = photo.Url;
         //}
 
         member.Photos.Add(photo);

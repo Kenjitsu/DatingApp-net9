@@ -12,7 +12,7 @@ namespace API.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ImageUrl",
+                name: "Url",
                 table: "Users",
                 type: "TEXT",
                 nullable: true);
@@ -81,7 +81,7 @@ namespace API.Data.Migrations
                 name: "Members");
 
             migrationBuilder.DropColumn(
-                name: "ImageUrl",
+                name: "Url",
                 table: "Users");
         }
     }

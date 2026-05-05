@@ -40,7 +40,7 @@ namespace API.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
@@ -154,7 +154,7 @@ namespace API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastActive")

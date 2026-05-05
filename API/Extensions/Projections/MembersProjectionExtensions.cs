@@ -25,7 +25,7 @@ public static class MembersProjectionExtensions
             Description = member.Description,
             City = member.City,
             Country = member.Country,
-            //ImageUrl = member.Photos == null
+            //Url = member.Photos == null
             //    ? null
             //    : member.Photos
             //    .Where(p => p.IsMain)
