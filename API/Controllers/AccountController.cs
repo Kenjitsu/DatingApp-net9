@@ -54,11 +54,11 @@ public class AccountController : BaseApiController
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-        if (user == null) return Unauthorized("Invalid email address");
+        if (user == null) return Unauthorized("Invalid email address or password");
 
         var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-        if (!result) return Unauthorized("Invalid password");
+        if (!result) return Unauthorized("Invalid email address or password");
 
         var userDto = await user.MapAppUserToUserDto(_tokenService);
 
